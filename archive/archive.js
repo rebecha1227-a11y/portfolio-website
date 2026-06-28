@@ -1401,9 +1401,10 @@
           return;
         }
 
-        // Check if current section has scrollable content (Deep Dive section)
         const current = sections[currentSection];
-        const scrollable = current.scrollHeight > current.clientHeight + 10;
+        const overflowStyle = current.style.overflow || getComputedStyle(current).overflow;
+        const canScroll = overflowStyle === 'auto' || overflowStyle === 'scroll';
+        const scrollable = canScroll && current.scrollHeight > current.clientHeight + 10;
 
         if (scrollable) {
           const atTop = current.scrollTop <= 2;
@@ -1441,7 +1442,9 @@
         const deltaY = touchStartY - e.touches[0].clientY;
 
         const current = sections[currentSection];
-        const scrollable = current.scrollHeight > current.clientHeight + 10;
+        const ovf = current.style.overflow || getComputedStyle(current).overflow;
+        const canScrollTouch = ovf === 'auto' || ovf === 'scroll';
+        const scrollable = canScrollTouch && current.scrollHeight > current.clientHeight + 10;
 
         if (scrollable) {
           const atTop = current.scrollTop <= 2;
