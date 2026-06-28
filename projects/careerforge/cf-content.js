@@ -110,6 +110,9 @@
           <span class="cf-scroll-arrow">&#x2193;</span>
           <span class="cf-scroll-text">SCROLL TO EXPLORE</span>
         </div>
+        <video class="cf-hero-video" autoplay muted loop playsinline>
+          <source src="projects/careerforge/dithered_video.webm" type="video/webm">
+        </video>
       </section>
 
       <!-- ORBIT SECTION -->

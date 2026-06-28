@@ -225,7 +225,7 @@
                 <div class="scan-line"></div>
               </div>
             </div>
-            <div class="image-caption-float">自主消息推送</div>
+            <div class="image-caption-float">AI自主活动记录</div>
           </div>
         </div>
       </section>
@@ -258,6 +258,7 @@
                   <div class="scan-line"></div>
                 </div>
               </div>
+              <div class="image-caption-float">AI解锁记录</div>
             </div>
             <div class="screenshot-reveal">
               <div class="remoire-phone-frame no-crop tilt-card">
@@ -266,9 +267,9 @@
                   <div class="scan-line"></div>
                 </div>
               </div>
+              <div class="image-caption-float">小纸条留言</div>
             </div>
           </div>
-          <div class="image-caption-float">日记与纸条系统</div>
         </div>
       </section>
 
@@ -307,6 +308,7 @@
                   <div class="scan-line"></div>
                 </div>
               </div>
+              <div class="image-caption-float">iPhone 设备感知</div>
             </div>
             <div class="screenshot-reveal">
               <div class="remoire-phone-frame no-crop tilt-card">
@@ -315,9 +317,9 @@
                   <div class="scan-line"></div>
                 </div>
               </div>
+              <div class="image-caption-float">Web Push 推送</div>
             </div>
           </div>
-          <div class="image-caption-float">跨平台同步设置</div>
         </div>
       </section>
 
@@ -355,6 +357,7 @@
                   <div class="scan-line"></div>
                 </div>
               </div>
+              <div class="image-caption-float">黎明时刻</div>
             </div>
             <div class="screenshot-reveal">
               <div class="remoire-phone-frame no-crop tilt-card">
@@ -363,9 +366,9 @@
                   <div class="scan-line"></div>
                 </div>
               </div>
+              <div class="image-caption-float">深夜时刻</div>
             </div>
           </div>
-          <div class="image-caption-float">黎明与深夜时刻</div>
         </div>
       </section>
 
@@ -494,7 +497,7 @@
       </section>
 
       <!-- FOOTER / CTA -->
-      <section class="remoire-footer">
+      <section class="remoire-footer" id="section-github">
         <div class="footer-bg-gradient"></div>
         <div class="footer-content">
           <div class="footer-actions">

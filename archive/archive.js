@@ -817,6 +817,31 @@
       const page = document.querySelector('.remoire-page');
       if (!page) return;
 
+      const subnav = document.querySelector('#project-subnav');
+      if (subnav) {
+        subnav.innerHTML = `
+          <a class="active" data-section="about">About</a>
+          <a data-section="features">Features</a>
+          <a data-section="tech">Tech</a>
+          <a data-section="github">GitHub</a>
+        `;
+        subnav.querySelectorAll('a[data-section]').forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = a.getAttribute('data-section');
+            subnav.querySelectorAll('a').forEach(x => x.classList.remove('active'));
+            a.classList.add('active');
+            const target = page.querySelector(`#section-${sectionId}`);
+            if (target) {
+              const container = page.closest('.browser-content');
+              if (container) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }
+          });
+        });
+      }
+
       // Counter animation for stats
       const statItems = page.querySelectorAll('.stat-item[data-count]');
       statItems.forEach((item, idx) => {
@@ -1039,7 +1064,7 @@
 
       const scrollRoot = this.browserContent || page.closest('.browser-content');
 
-      // Update subnav for CareerForge
+      // Update subnav labels for CareerForge (click binding happens in _initCFParticleTransitions where goToSection is defined)
       const subnav = document.querySelector('#project-subnav');
       if (subnav) {
         subnav.innerHTML = `
@@ -1049,15 +1074,6 @@
           <a data-section="3">Details</a>
           <a data-section="4">GitHub</a>
         `;
-        subnav.querySelectorAll('a').forEach(a => {
-          a.addEventListener('click', (e) => {
-            e.preventDefault();
-            const sectionIdx = parseInt(a.getAttribute('data-section'));
-            if (!isNaN(sectionIdx)) {
-              goToSection(sectionIdx);
-            }
-          });
-        });
       }
 
       // Star field
@@ -1393,6 +1409,20 @@
           scrollAccumulated = 0;
         });
       };
+
+      // Bind subnav clicks now that goToSection is defined
+      const subnavEl = document.querySelector('#project-subnav');
+      if (subnavEl) {
+        subnavEl.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionIdx = parseInt(a.getAttribute('data-section'));
+            if (!isNaN(sectionIdx)) {
+              goToSection(sectionIdx);
+            }
+          });
+        });
+      }
 
       // Handle wheel events with damping
       const handleWheel = (e) => {
