@@ -3,7 +3,7 @@
 ## 项目概览
 
 千禧复古 Mac OS 风格的个人作品集网站，纯静态前端（HTML/CSS/JS），部署在 Vercel。
-- 线上地址：通过 Vercel `portfolio-website` 项目部署
+- 线上地址：通过 Vercel `jingeros` 项目部署
 - GitHub：`rebecha1227-a11y/portfolio-website`
 
 ## 技术栈
