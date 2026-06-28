@@ -262,7 +262,7 @@
       top: 28px;
       left: 0;
       width: 100%;
-      height: calc(100vh - 28px - 68px);
+      height: calc(100vh - 28px);
       padding: var(--space-5);
       background: url('backgrounds/wallpaper.jpg') center/cover no-repeat;
       background-color: #CCCCCC;
@@ -1859,7 +1859,8 @@
       </div>
       <div class="window-tabs">
         <button class="window-tab-btn active" onclick="switchWindowTab('win-about', 'bio-general')">General</button>
-        <button class="window-tab-btn" onclick="switchWindowTab('win-about', 'bio-methodology')">Methodology</button>
+        <button class="window-tab-btn" onclick="switchWindowTab('win-about', 'bio-skills')">Skills</button>
+        <button class="window-tab-btn" onclick="switchWindowTab('win-about', 'bio-story')">Story</button>
       </div>
       <div class="window-content">
         <!-- Tab 1: General Bio -->
@@ -1869,50 +1870,114 @@
             <div class="bio-text-area">
               <div class="lang-zh">
                 <p><strong>周静儿 / Jinger Zhou</strong></p>
-                <p>我不是传统软件开发出身——我的本硕教育专注于英语翻译及传媒笔译。2025年我第一次打开了 Claude Code，那一刻改变了我的职业轨迹。</p>
-                <p>我发现自己真正擅长的是<strong>“翻译业务需求与技术系统之间的鸿沟”</strong>。通过 Vibe Coding，我在6个月里从零独立搭建并交付了5个全栈AI项目。</p>
-                <p>我是AI时代能够快速交付、闭环思路的AI Native Builder。</p>
+                <p>我不是传统软件开发出身——我的本硕教育专注于英语翻译及传媒笔译。2025 年初我第一次打开了 Cursor，从此走上了 Vibe Coding 的道路；2026 年接触 Claude Code 后，我的开发效率和产品交付能力再次跃升。</p>
+                <p>我发现自己真正擅长的是<strong>「翻译业务需求与技术系统之间的鸿沟」</strong>。通过 Vibe Coding，我从零独立搭建并交付了 5 个全栈 AI 项目。</p>
+                <p>我是 AI 时代能够快速交付、闭环思路的 AI Native Builder。</p>
               </div>
               <div class="lang-en">
                 <p><strong>Jinger Zhou</strong></p>
-                <p>My academic foundation lies in English Translation and Media Translation. In 2025, my first exploration with Claude Code entirely transformed my perspective.</p>
-                <p>I realized my ultimate superpower: <strong>bridging the communicative divide between product goals and AI architecture</strong>. Over 6 months, I fully built and shipped 5 projects via Vibe Coding.</p>
+                <p>My academic foundation lies in English Translation and Media Translation. In early 2025, my first exploration with Cursor set me on the path of Vibe Coding; discovering Claude Code in 2026 took my development efficiency to another level.</p>
+                <p>I realized my ultimate superpower: <strong>bridging the communicative divide between product goals and AI architecture</strong>. Via Vibe Coding, I fully built and shipped 5 projects from scratch.</p>
                 <p>I am an AI Native Builder engineered to design, prompt, and ship fast.</p>
               </div>
-              
-              <table class="bio-stats-table">
+
+              <table class="bio-stats-table lang-zh">
+                <tr>
+                  <td class="label">坐标</td>
+                  <td>广州</td>
+                </tr>
+                <tr>
+                  <td class="label">方向</td>
+                  <td>AI 产品管理 / Vibe Coding</td>
+                </tr>
+                <tr>
+                  <td class="label">语言</td>
+                  <td>中文（母语）/ 英语（雅思 7.5）/ 法语（A2）</td>
+                </tr>
+              </table>
+              <table class="bio-stats-table lang-en">
                 <tr>
                   <td class="label">Location</td>
-                  <td>Guangzhou, China (📍广州)</td>
+                  <td>Guangzhou, China</td>
                 </tr>
                 <tr>
                   <td class="label">Focus</td>
-                  <td>AI Product Management / AI Engineering</td>
+                  <td>AI Product Management / Vibe Coding</td>
                 </tr>
                 <tr>
                   <td class="label">Languages</td>
-                  <td>Mandarin (Native) / English (IELTS 7.5) / French (Learning)</td>
+                  <td>Mandarin (Native) / English (IELTS 7.5) / French (A2)</td>
                 </tr>
               </table>
             </div>
           </div>
         </div>
-        
-        <!-- Tab 2: Methodology -->
-        <div class="tab-panel" id="bio-methodology">
+
+        <!-- Tab 2: Skills -->
+        <div class="tab-panel" id="bio-skills">
           <div style="font-family: var(--font-body); line-height: 1.6;">
-            <h3 style="margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;">My Prompt Engineering & AI PM Playbook</h3>
+            <h3 style="margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;" class="lang-zh">硬技能</h3>
+            <h3 style="margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;" class="lang-en">Hard Skills</h3>
             <div class="exp-list-item">
-              <p><strong>1. Handover Skill</strong></p>
-              <p style="color: #555; font-size: 13px;">Structuring transition markdown notes between sessions to bypass context limit rot on large-scale builds.</p>
+              <p><strong class="lang-zh">AI 开发工具</strong><strong class="lang-en">AI Development Tools</strong></p>
+              <p style="color: #555; font-size: 13px;">Claude Code / Cursor / Codex / Trae / VS Code</p>
             </div>
             <div class="exp-list-item">
-              <p><strong>2. Reflective System Design</strong></p>
-              <p style="color: #555; font-size: 13px;">Automatically updating runtime instruction rules inside active prompts upon module refactoring.</p>
+              <p><strong class="lang-zh">技术栈</strong><strong class="lang-en">Technical Stack</strong></p>
+              <p style="color: #555; font-size: 13px;">HTML / CSS / JavaScript / Supabase / MCP Protocol / Database Design / Vector Semantic Matching</p>
             </div>
             <div class="exp-list-item">
-              <p><strong>3. Dual-Language Requirement Translation</strong></p>
-              <p style="color: #555; font-size: 13px;">My linguistic master's background enables highly precise, non-ambiguous specifications compiled directly for LLMs.</p>
+              <p><strong class="lang-zh">设计与工具</strong><strong class="lang-en">Design & Tools</strong></p>
+              <p style="color: #555; font-size: 13px;" class="lang-zh">Figma / Photoshop / Notion / 飞书 / MS Office / SDL Trados</p>
+              <p style="color: #555; font-size: 13px;" class="lang-en">Figma / Photoshop / Notion / Feishu / MS Office / SDL Trados</p>
+            </div>
+            <div class="exp-list-item">
+              <p><strong class="lang-zh">语言能力</strong><strong class="lang-en">Language Proficiency</strong></p>
+              <p style="color: #555; font-size: 13px;" class="lang-zh">英语专八 / CATTI 二级笔译 / 雅思 7.5（阅读 8.5 / 写作 7.5）/ 法语 A2</p>
+              <p style="color: #555; font-size: 13px;" class="lang-en">TEM-8 / CATTI Level 2 / IELTS 7.5 (Reading 8.5 / Writing 7.5) / French (A2)</p>
+            </div>
+
+            <h3 style="margin-top: var(--space-4); margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;" class="lang-zh">可迁移能力</h3>
+            <h3 style="margin-top: var(--space-4); margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;" class="lang-en">Transferable Skills</h3>
+            <div class="exp-list-item">
+              <p><strong class="lang-zh">Prompt 工程与 Badcase 分析</strong><strong class="lang-en">Prompt Engineering & Badcase Analysis</strong></p>
+              <p style="color: #555; font-size: 13px;" class="lang-zh">深度使用 DeepSeek / Claude / GPT 等主流大模型，熟悉各模型能力边界，擅长通过标注好坏回复驱动 prompt 迭代优化</p>
+              <p style="color: #555; font-size: 13px;" class="lang-en">Deep experience with DeepSeek / Claude / GPT. Skilled at driving prompt iteration through annotated good/bad response examples.</p>
+            </div>
+            <div class="exp-list-item">
+              <p><strong class="lang-zh">需求拆解与产品设计</strong><strong class="lang-en">Requirements Analysis & Product Design</strong></p>
+              <p style="color: #555; font-size: 13px;" class="lang-zh">擅长将模糊需求提炼为可执行的阶段性任务，从 0 到 1 设计产品架构与用户体验</p>
+              <p style="color: #555; font-size: 13px;" class="lang-en">Translating ambiguous requirements into actionable milestones. End-to-end product architecture and UX design.</p>
+            </div>
+            <div class="exp-list-item">
+              <p><strong class="lang-zh">项目管理与多线并行</strong><strong class="lang-en">Project Management & Multi-tasking</strong></p>
+              <p style="color: #555; font-size: 13px;" class="lang-zh">高压环境下管理 500+ 份项目交付，协调多方角色（学生/家长/招生官/技术团队）</p>
+              <p style="color: #555; font-size: 13px;" class="lang-en">Managed 500+ project deliveries under pressure. Coordinated across students, parents, admissions officers, and tech teams.</p>
+            </div>
+            <div class="exp-list-item">
+              <p><strong class="lang-zh">内容运营与社区建设</strong><strong class="lang-en">Content Operations & Community Building</strong></p>
+              <p style="color: #555; font-size: 13px;" class="lang-zh">小红书累计 1.8 万获赞与收藏，多篇爆文，运营粉丝社群</p>
+              <p style="color: #555; font-size: 13px;" class="lang-en">18K+ likes & saves on Xiaohongshu (Rednote), multiple viral posts, active community management.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Story -->
+        <div class="tab-panel" id="bio-story">
+          <div style="font-family: var(--font-body); line-height: 1.7;">
+            <h3 style="margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;" class="lang-zh">从翻译硕士到 AI Builder</h3>
+            <h3 style="margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;" class="lang-en">From Translator to AI Builder</h3>
+            <div class="lang-zh" style="font-size: 13.5px; color: #444;">
+              <p style="margin-bottom: 10px;">我的本科和硕士都学的是英语翻译。毕业后在新东方做留学文书指导，之后去了广州外国语学校当升学顾问。这些工作教会我一件事：<strong>把复杂的信息翻译成对方能理解的语言</strong>——无论对方是学生、家长还是招生官。</p>
+              <p style="margin-bottom: 10px;">2025 年初，我第一次接触 Cursor，发现这种「翻译能力」在 AI 时代有了全新的用武之地——我可以把业务需求精确地「翻译」给 AI，让它帮我把想法变成真正能用的产品。2026 年接触 Claude Code 之后，我的开发效率和交付能力再次跃升。</p>
+              <p style="margin-bottom: 10px;">从那以后，我从零搭建了 5 个 AI 项目：情感记忆系统 Remoire、AI 角色扮演聊天平台、求职工具包 CareerForge、小红书图文生成器、法语学习网站。每一个项目都是从一个真实的需求出发，靠 Vibe Coding 一步步做出来的。</p>
+              <p style="margin-bottom: 10px;">我不是科班出身的程序员，但我知道怎么把一个想法变成一个能用的东西。这就是我的超能力。</p>
+            </div>
+            <div class="lang-en" style="font-size: 13.5px; color: #444;">
+              <p style="margin-bottom: 10px;">My undergraduate and master's degrees were both in English Translation. After graduation, I worked as a study-abroad advisor at New Oriental, then as a college counselor at Guangzhou Foreign Language School. These roles taught me one core skill: <strong>translating complex information into language anyone can understand</strong>.</p>
+              <p style="margin-bottom: 10px;">In early 2025, I discovered Cursor and realized this "translation ability" had an entirely new application in the AI era. I could precisely translate business requirements for AI, turning ideas into real, functional products. After picking up Claude Code in 2026, my development efficiency leaped to another level.</p>
+              <p style="margin-bottom: 10px;">Since then, I've built 5 AI projects from scratch: Remoire (an emotional memory system), an AI roleplay chat platform, CareerForge (a job-seeking toolkit), a Xiaohongshu content generator, and a French learning site. Every project started from a real need and was built step by step through Vibe Coding.</p>
+              <p style="margin-bottom: 10px;">I'm not a trained programmer — but I know how to turn an idea into something that works. That's my superpower.</p>
             </div>
           </div>
         </div>
@@ -2122,35 +2187,46 @@
         <div class="tab-panel active" id="exp-professional">
           <div class="exp-list-item">
             <div class="exp-item-header">
-              <span class="exp-item-title lang-zh">AI Native Builder 转型实践</span>
-              <span class="exp-item-title lang-en">AI Native Builder Experience</span>
-              <span class="exp-item-year">2025-Current</span>
+              <span class="exp-item-title lang-zh">AI Native Builder · 独立开发者</span>
+              <span class="exp-item-title lang-en">AI Native Builder · Independent Developer</span>
+              <span class="exp-item-year">2025.01 - Current</span>
             </div>
-            <div class="exp-item-org">Vibe Coding Builder</div>
-            <p class="exp-item-desc lang-zh">6个月内独立构思并交付5+项AI应用。开源求职系统斩获过百Stars，小红书原创AI工具干货收获万级点赞、收藏。</p>
-            <p class="exp-item-desc lang-en">Sought and built 5+ personal SaaS platforms completely driven by AI pairing and compiler automation. Acclaimed notable open source and social validation.</p>
+            <div class="exp-item-org">Vibe Coding · Full-stack AI Projects</div>
+            <p class="exp-item-desc lang-zh">6 个月内从零独立搭建并交付 5+ 个全栈 AI 产品（Remoire 记忆系统、角色扮演聊天平台、CareerForge 求职工具包、小红书图片生成器、法语学习平台）。CareerForge 开源项目获 GitHub 140+ Stars。小红书持续输出 AI 实战内容，累计获赞与收藏 1.8 万，单篇爆文 1,780 赞 / 3,459 收藏。</p>
+            <p class="exp-item-desc lang-en">Built and shipped 5+ full-stack AI products from scratch in 6 months (Remoire memory system, RP chat platform, CareerForge career toolkit, Xiaohongshu image generator, French learning site). CareerForge earned 140+ GitHub Stars. 18K+ likes & saves on Xiaohongshu with viral posts reaching 1,780 likes / 3,459 saves.</p>
           </div>
 
           <div class="exp-list-item">
             <div class="exp-item-header">
-              <span class="exp-item-title lang-zh">新东方 SFK · 留学申请指导</span>
-              <span class="exp-item-title lang-en">New Oriental SFK · Portfolio Advisor</span>
-              <span class="exp-item-year">2023-2024</span>
+              <span class="exp-item-title lang-zh">广州外国语学校 AP&AL 国际课程 · 升学指导顾问</span>
+              <span class="exp-item-title lang-en">Guangzhou Foreign Language School · College Counselor</span>
+              <span class="exp-item-year">2024.06 - Current</span>
+            </div>
+            <div class="exp-item-org">AP & A-Level International Program</div>
+            <p class="exp-item-desc lang-zh">为 20+ 名学生设计全流程升学方案，独立建立全球 100+ 顶尖夏校项目数据库。运营教育社交媒体账号产出 30+ 篇内容（2 万+ 浏览量）。长期对接学生、家长、海外招生官（30+）等多方角色。主导艺术类项目式研究社团课程设计。</p>
+            <p class="exp-item-desc lang-en">Designed end-to-end college plans for 20+ students. Built a database of 100+ global summer programs. Managed edu social media (30+ posts, 20K+ views). Coordinated with students, parents, and 30+ overseas admissions officers. Led project-based arts curriculum design.</p>
+          </div>
+
+          <div class="exp-list-item">
+            <div class="exp-item-header">
+              <span class="exp-item-title lang-zh">新东方 SFK · 留学指导老师</span>
+              <span class="exp-item-title lang-en">New Oriental SFK · Study Abroad Advisor</span>
+              <span class="exp-item-year">2023.05 - 2024.06</span>
             </div>
             <div class="exp-item-org">New Oriental Education Group</div>
-            <p class="exp-item-desc lang-zh">精修与策划超 500+ 项目方案与个人陈述。在辅导文书工作中培养了极强的高效需求提取和跨行业知识拆解能力。</p>
-            <p class="exp-item-desc lang-en">Iterated visual and conceptual portfolios for 500+ creative applications. Strengthened deep requirements extraction skills.</p>
+            <p class="exp-item-desc lang-zh">独立管理 500+ 份文书撰写项目，协调学生需求与院校标准，助力学生获得 100+ 知名院校 offer。深度挖掘学生特色将模糊需求提炼为差异化申请策略，面试辅导通过率 90%+。高压多线并行环境下合理排期交付。</p>
+            <p class="exp-item-desc lang-en">Managed 500+ application essays, coordinating student needs with university standards, securing 100+ top-tier offers. Refined vague requirements into differentiated strategies. 90%+ interview coaching pass rate. Delivered under high-pressure, multi-project timelines.</p>
           </div>
 
           <div class="exp-list-item">
             <div class="exp-item-header">
-              <span class="exp-item-title lang-zh">树根互联 · 翻译实习生 (产品方向)</span>
-              <span class="exp-item-title lang-en">ROOTCLOUD · Localization Intern</span>
-              <span class="exp-item-year">2022</span>
+              <span class="exp-item-title lang-zh">树根互联 · 翻译实习生（产品方向）</span>
+              <span class="exp-item-title lang-en">ROOTCLOUD · Localization Intern (Product)</span>
+              <span class="exp-item-year">2022.06 - 2022.09</span>
             </div>
-            <div class="exp-item-org">ROOTCLOUD IoT platform</div>
-            <p class="exp-item-desc lang-zh">主导 10 万+ 字工业互联网核心架构及操作技术文档翻译。协助产品调研及海外用户文档路径优化。</p>
-            <p class="exp-item-desc lang-en">Coordinated technical localization and competitive analysis for top-tier industrial IoT product lines.</p>
+            <div class="exp-item-org">ROOTCLOUD IoT Platform</div>
+            <p class="exp-item-desc lang-zh">快速掌握工业物联网产品知识，独立完成 10+ 种技术文档翻译与撰写（累计 10 万+ 字）。分析竞品网站语言风格与翻译策略并输出优化建议。建立翻译语言资产提高效率 10%，优化排期节省时间成本 5%。</p>
+            <p class="exp-item-desc lang-en">Mastered industrial IoT domain knowledge. Independently translated 10+ technical documents (100K+ words). Conducted competitor analysis on localization strategies. Built translation assets improving efficiency by 10% and reducing scheduling costs by 5%.</p>
           </div>
         </div>
 
@@ -2158,22 +2234,22 @@
         <div class="tab-panel" id="exp-academic">
           <div class="exp-list-item">
             <div class="exp-item-header">
-              <span class="exp-item-title lang-zh">广东外语外贸大学 · 翻译硕士</span>
-              <span class="exp-item-title lang-en">GDUFS · M.A. in Media Translation</span>
-              <span class="exp-item-year">2021</span>
+              <span class="exp-item-title lang-zh">广东外语外贸大学 · 英语笔译翻译硕士（传媒方向）</span>
+              <span class="exp-item-title lang-en">GDUFS · M.A. in Translation (Media Studies)</span>
+              <span class="exp-item-year">2021.09 - 2023.06</span>
             </div>
-            <p class="exp-item-desc lang-zh">英语翻译硕士（传媒译审方向）。GPA 3.8/4.0。曾担任71人协作学术审校小组组长。</p>
-            <p class="exp-item-desc lang-en">Specialized in Media Translation. GPA 3.8/4.0. Directed a collaborative research group consisting of 71 reviewers.</p>
+            <p class="exp-item-desc lang-zh">GPA 3.8/4.0（专业前 10%），连续两年校奖学金一等奖。韩素音国际翻译大赛汉译英优秀奖，CATTI 杯翻译大赛 A 组三等奖。担任校笔译队项目市场部部长，管理 71 名译员审校团队，主导招募 68 名新成员。</p>
+            <p class="exp-item-desc lang-en">GPA 3.8/4.0 (Top 10%). First-class scholarship for 2 consecutive years. Awards: Han Suyin International Translation Contest (Excellence) & CATTI Cup (3rd Place, Group A). Led translation team as Project & Marketing Director, managing 71 translators and recruiting 68 new members.</p>
           </div>
-          
+
           <div class="exp-list-item">
             <div class="exp-item-header">
               <span class="exp-item-title lang-zh">浙江农林大学 · 英语学士</span>
               <span class="exp-item-title lang-en">ZAFU · B.A. in English</span>
-              <span class="exp-item-year">2017</span>
+              <span class="exp-item-year">2017.09 - 2021.06</span>
             </div>
-            <p class="exp-item-desc lang-zh">英语专业本科。GPA 3.85/4.0，位居专业前 5%，获得校一等奖学金。</p>
-            <p class="exp-item-desc lang-en">B.A. in English. GPA 3.85/4.0, ranking top 5% among majors.</p>
+            <p class="exp-item-desc lang-zh">GPA 3.85/4.0（专业前 5%），连续四年校奖学金二等奖。</p>
+            <p class="exp-item-desc lang-en">GPA 3.85/4.0 (Top 5%). Second-class scholarship for 4 consecutive years.</p>
           </div>
         </div>
       </div>
