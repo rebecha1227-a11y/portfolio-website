@@ -1,0 +1,3678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jinger Zhou — AI Product Manager · AI Native Builder</title>
+  <style>
+    /* ─── 1. GOOGLE FONTS IMPORT ─────────────────────────────────────── */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+    @font-face {
+      font-family: 'Fusion Pixel';
+      src: url('fonts/fusion-pixel/fusion-pixel.otf') format('opentype'),
+           url('fonts/fusion-pixel/fusion-pixel.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ─── 2. COLOR TOKENS & VARIABLES (macOS Classic Platinum/Aqua) ─── */
+    :root {
+      /* Classic macOS Gray Palette */
+      --terminal-gray:  #1A1A2E;
+      --pixel-blue:     #3875D7;
+      --retro-pink:     #E8839B;
+      --matrix-green:   #409950;
+      --crt-cream:      #ECE9D8;
+      --warm-gray:      #B5B5B5;
+      --screen-glow:    #E2E2E6;
+      --accent-yellow:  #EAC028;
+
+      /* Semantic Roles */
+      --bg-primary:     var(--screen-glow);
+      --bg-card:        #F4F4F4;
+      --bg-dark:        var(--terminal-gray);
+      --bg-elevated:    #FFFFFF;
+
+      --text-primary:   #000000;
+      --text-secondary: #404040;
+      --text-muted:     #707070;
+      --text-inverse:   #F0EDE5;
+      --text-link:      var(--pixel-blue);
+
+      --border-default:  #CCCCCC;
+      --border-light:    #EAEAE6;
+      --border-dark:     #999999;
+      --border-inset-hi: #FFFFFF;
+      --border-inset-lo: #777777;
+      --shadow-sm:       0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md:       0 4px 12px rgba(0,0,0,0.15);
+      --shadow-lg:       0 8px 24px rgba(0,0,0,0.2);
+      --shadow-window:   2px 4px 16px rgba(0,0,0,0.15);
+
+      --btn-close:       #FF5F57;
+      --btn-minimize:    #FFBD2E;
+      --btn-maximize:    #28CA41;
+
+      /* Typography */
+      --font-pixel:     'Press Start 2P', monospace;
+      --font-pixel-ui:  'Silkscreen', monospace;
+      --font-body:      'Space Grotesk', 'Inter', 'Noto Sans SC', sans-serif;
+      --font-mono:      'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+      --font-zh:        'Noto Sans SC', sans-serif;
+
+      --text-hero:      clamp(28px, 4vw, 48px);
+      --text-h1:        clamp(20px, 3vw, 32px);
+      --text-h2:        clamp(18px, 2.5vw, 24px);
+      --text-h3:        clamp(16px, 2vw, 18px);
+      --text-body:      15px;
+      --text-sm:        13px;
+      --text-xs:        11px;
+      --text-command:   14px;
+
+      --weight-normal:  400;
+      --weight-medium:  500;
+      --weight-semi:    600;
+      --weight-bold:    700;
+
+      --leading-tight:  1.3;
+      --leading-normal: 1.65;
+      --leading-loose:  1.8;
+
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  24px;
+      --space-6:  32px;
+
+      --radius-sm:    2px;
+      --radius-md:    4px;
+      --radius-lg:    6px;
+      --radius-pill:  999px;
+
+      --z-bg:         -1;
+      --z-base:        0;
+      --z-card:        10;
+      --z-window:      100;
+      --z-window-top:  200;
+      --z-dock:        300;
+      --z-nav:         400;
+      --z-overlay:     500;
+      --z-modal:       600;
+      --z-toast:       700;
+    }
+
+    /* ─── 3. BASE RESETS & GLOBALS ───────────────────────────────────── */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      font-weight: var(--weight-normal);
+      line-height: var(--leading-normal);
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    :lang(zh) p, :lang(zh) li {
+      line-height: var(--leading-loose);
+    }
+
+    /* Accessibility Focus */
+    :focus-visible {
+      outline: 2px dashed var(--pixel-blue);
+      outline-offset: 3px;
+    }
+
+    /* ─── 4. TOP MENU BAR (macOS Platinum style) ─────────────────────── */
+    .menu-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 28px;
+      background: linear-gradient(to bottom, #F6F6F6, #E5E5E5);
+      color: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-4);
+      z-index: var(--z-nav);
+      border-bottom: 1px solid #B0B0B0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: var(--text-sm);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .menu-item-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .menu-logo {
+      font-size: 15px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      padding: 4px var(--space-2);
+      font-weight: bold;
+    }
+
+    .menu-logo:hover, .menu-trigger:hover {
+      background-color: #3875D7;
+      color: #FFFFFF;
+      border-radius: var(--radius-sm);
+    }
+
+    .menu-trigger {
+      cursor: pointer;
+      padding: 4px var(--space-3);
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    /* Dropdown Menus on Hover */
+    .menu-dropdown {
+      display: none;
+      position: absolute;
+      top: 24px;
+      left: 0;
+      background-color: #FFFFFF;
+      color: #000000;
+      border: 1px solid #B0B0B0;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      min-width: 160px;
+      z-index: var(--z-nav);
+      padding: 4px 0;
+    }
+
+    .menu-item-container:hover .menu-dropdown {
+      display: block;
+    }
+
+    .menu-dropdown-item {
+      padding: 6px var(--space-4);
+      cursor: pointer;
+      font-size: 13px;
+      transition: background-color 0.1s;
+    }
+
+    .menu-dropdown-item:hover {
+      background-color: #3875D7;
+      color: #FFFFFF;
+    }
+
+    .menu-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .lang-switch {
+      background-color: rgba(0, 0, 0, 0.05);
+      border: 1px solid #B0B0B0;
+      border-radius: var(--radius-pill);
+      color: #000000;
+      padding: 2px 10px;
+      font-size: var(--text-xs);
+      font-family: var(--font-pixel-ui);
+      cursor: pointer;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lang-switch:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .clock-widget {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+    }
+
+    /* ─── 5. DESKTOP AREA ────────────────────────────────────────────── */
+    .desktop {
+      position: absolute;
+      top: 28px;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 28px - 68px);
+      padding: var(--space-5);
+      background: url('backgrounds/wallpaper.jpg') center/cover no-repeat;
+      background-color: #CCCCCC;
+      overflow: hidden;
+    }
+    .desktop::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(220, 225, 230, 0.75);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Hero welcome layer */
+    .hero-container {
+      position: absolute;
+      top: var(--space-5);
+      left: var(--space-5);
+      max-width: 650px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-family: var(--font-pixel);
+      font-size: var(--text-h2);
+      color: #111111;
+      margin-bottom: var(--space-2);
+      line-height: 1.3;
+      text-shadow: 0 0 8px #fff, 0 0 16px #fff, 1px 1px 0 #fff;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-weight: var(--weight-bold);
+      color: var(--pixel-blue);
+      margin-bottom: var(--space-3);
+      font-size: var(--text-h3);
+      text-shadow: 0 0 8px #fff, 0 0 16px #fff, 1px 1px 0 #fff;
+    }
+
+    .hero-quote {
+      font-family: var(--font-pixel);
+      font-size: var(--text-sm);
+      color: #333333;
+      border-left: 3px solid var(--retro-pink);
+      padding-left: var(--space-3);
+      line-height: 1.8;
+      text-shadow: 0 0 8px #fff, 0 0 16px #fff, 1px 1px 0 #fff;
+      min-height: 1.5em;
+    }
+    .hero-quote p {
+      margin: 0;
+    }
+    .hero-quote .lang-zh {
+      font-family: 'Fusion Pixel', monospace;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    .hero-quote .typewriter-line2 {
+      font-family: var(--font-pixel);
+      font-size: 16px;
+      margin-top: 4px;
+    }
+    body.lang-en .hero-quote .lang-zh {
+      display: none;
+    }
+    .typewriter-cursor {
+      display: inline;
+      animation: blink-cursor 0.7s step-end infinite;
+      color: var(--retro-pink);
+      font-weight: bold;
+    }
+    @keyframes blink-cursor {
+      50% { opacity: 0; }
+    }
+
+    /* Desktop Icons */
+    .desktop-icons {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: var(--z-card);
+      pointer-events: none;
+    }
+
+    .desktop-icon {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 84px;
+      cursor: grab;
+      text-align: center;
+      gap: var(--space-2);
+      pointer-events: auto;
+      user-select: none;
+    }
+    .desktop-icon.dragging {
+      cursor: grabbing;
+      opacity: 0.8;
+      z-index: 999;
+    }
+
+    .desktop-icon .icon-graphic {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--duration-base) var(--ease-default);
+    }
+    .desktop-icon .icon-graphic img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .desktop-icon:hover .icon-graphic {
+      transform: scale(1.05);
+      border-color: var(--pixel-blue);
+    }
+
+    .desktop-icon .icon-label {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: var(--text-xs);
+      color: #000000;
+      text-shadow: 1px 1px 1px #FFFFFF;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    /* ─── 6. CLASSIC WINDOW SYSTEM (macOS Gray) ──────────────────────── */
+    .window {
+      position: absolute;
+      background-color: #FFFFFF;
+      border: 1px solid #999999;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-window);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: var(--z-window);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+      min-width: 250px;
+      min-height: 150px;
+    }
+
+    .win-resize {
+      position: absolute;
+      z-index: 10;
+    }
+    .win-resize-e { top: 0; right: -3px; width: 6px; height: 100%; cursor: e-resize; }
+    .win-resize-w { top: 0; left: -3px; width: 6px; height: 100%; cursor: w-resize; }
+    .win-resize-s { bottom: -3px; left: 0; width: 100%; height: 6px; cursor: s-resize; }
+    .win-resize-n { top: -3px; left: 0; width: 100%; height: 6px; cursor: n-resize; }
+    .win-resize-se { bottom: -4px; right: -4px; width: 12px; height: 12px; cursor: se-resize; }
+    .win-resize-sw { bottom: -4px; left: -4px; width: 12px; height: 12px; cursor: sw-resize; }
+    .win-resize-ne { top: -4px; right: -4px; width: 12px; height: 12px; cursor: ne-resize; }
+    .win-resize-nw { top: -4px; left: -4px; width: 12px; height: 12px; cursor: nw-resize; }
+
+    .window.minimized {
+      /* Handled programmatically via Genie animation class */
+    }
+
+    .window.closed {
+      display: none;
+    }
+
+    .window.maximized {
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* Window Header / Titlebar (Apple light gray) */
+    .window-header {
+      background: linear-gradient(to bottom, #F3F3F3, #DCDCDC);
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-2);
+      border-bottom: 1px solid #A5A5A5;
+      cursor: move;
+      user-select: none;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 5px;
+    }
+
+    .control-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+    }
+
+    .control-btn::after {
+      font-size: 8px;
+      font-family: var(--font-pixel-ui);
+      color: rgba(0, 0, 0, 0.7);
+      display: none;
+      font-weight: bold;
+    }
+
+    .window-header:hover .control-btn::after {
+      display: block;
+    }
+
+    .control-btn.btn-close {
+      background-color: var(--btn-close);
+    }
+    .control-btn.btn-close::after {
+      content: '×';
+    }
+
+    .control-btn.btn-minimize {
+      background-color: var(--btn-minimize);
+    }
+    .control-btn.btn-minimize::after {
+      content: '−';
+      top: -1px;
+    }
+
+    .control-btn.btn-maximize {
+      background-color: var(--btn-maximize);
+    }
+    .control-btn.btn-maximize::after {
+      content: '+';
+    }
+
+    .window-title {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 12px;
+      color: #333333;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .window-spacer {
+      width: 48px;
+    }
+
+    .window-content {
+      flex: 1;
+      overflow-y: auto;
+      background-color: #FFFFFF;
+      color: var(--text-primary);
+      position: relative;
+    }
+
+    /* macOS Segmented Tab control in windows */
+    .window-tabs {
+      display: flex;
+      background-color: #EAEAEA;
+      border-bottom: 1px solid #CCCCCC;
+      padding: 4px 8px 0 8px;
+      gap: 2px;
+    }
+
+    .window-tab-btn {
+      background-color: #DCDCDC;
+      border: 1px solid #B5B5B5;
+      border-bottom: none;
+      padding: 6px 12px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      color: #333;
+    }
+
+    .window-tab-btn.active {
+      background-color: #FFFFFF;
+      border-bottom: 1px solid #FFFFFF;
+      font-weight: bold;
+      margin-bottom: -1px;
+      color: #000;
+    }
+
+    .tab-panel {
+      display: none;
+      padding: var(--space-4);
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Retro style button element */
+    .btn-retro {
+      background: #F0F0F0;
+      color: var(--text-primary);
+      border: 1px solid #A5A5A5;
+      padding: var(--space-2) var(--space-4);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .btn-retro:hover {
+      background-color: #E2E2E2;
+    }
+
+    .btn-retro:active {
+      background-color: #D5D5D5;
+    }
+
+    /* ─── 7. WINDOW CONTENT LAYOUTS (Non-terminal) ──────────────────── */
+
+    /* Bio layout */
+    .bio-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    @media (min-width: 600px) {
+      .bio-container {
+        grid-template-columns: 200px 1fr;
+      }
+    }
+
+    .bio-graphic-placeholder {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .bio-text-area {
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      color: #333333;
+      line-height: 1.6;
+    }
+
+    .bio-text-area p {
+      margin-bottom: var(--space-3);
+    }
+
+    .bio-stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: var(--space-4);
+      font-size: 13px;
+    }
+
+    .bio-stats-table td {
+      padding: 6px 0;
+      border-bottom: 1px solid #EAEAE6;
+    }
+
+    .bio-stats-table td.label {
+      font-weight: bold;
+      color: var(--text-muted);
+      width: 120px;
+    }
+
+    /* Experiences Panel Layout */
+    .exp-list-item {
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid #EAEAE6;
+    }
+
+    .exp-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .exp-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-1);
+    }
+
+    .exp-item-title {
+      font-weight: bold;
+      font-size: 15px;
+      color: #000;
+    }
+
+    .exp-item-year {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .exp-item-org {
+      font-size: var(--text-sm);
+      color: var(--pixel-blue);
+      margin-bottom: var(--space-2);
+      font-weight: 500;
+    }
+
+    .exp-item-desc {
+      font-size: var(--text-sm);
+      color: #444444;
+      line-height: 1.5;
+    }
+
+    /* About JingerOS panel (Mac standard modal dialog) */
+    .about-os-content {
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-3);
+    }
+
+    .about-os-logo {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--pixel-blue);
+      text-shadow: 2px 2px 0px var(--retro-pink);
+      font-family: var(--font-pixel);
+      margin-bottom: var(--space-2);
+    }
+
+    .about-os-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #000000;
+    }
+
+    .about-os-desc {
+      font-size: 13px;
+      color: #555555;
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    /* Projects panel styling */
+    .projects-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 4px var(--space-2);
+      background: linear-gradient(to bottom, #F0F0F0, #E0E0E0);
+      border-bottom: 1px solid #B0B0B0;
+    }
+
+    .projects-nav-btn {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #B0B0B0;
+      border-radius: 4px;
+      background: linear-gradient(to bottom, #FAFAFA, #E8E8E8);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #555;
+      font-family: system-ui;
+    }
+
+    .projects-nav-btn:hover { background: #FFFFFF; }
+    .projects-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    .projects-nav-btn:disabled:hover { background: linear-gradient(to bottom, #FAFAFA, #E8E8E8); }
+
+    .projects-nav-title {
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      margin-left: var(--space-1);
+    }
+
+    .projects-gallery {
+      padding: var(--space-4);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 320px));
+      justify-content: center;
+      gap: var(--space-4);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .project-gallery-item {
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #FAFAFA;
+      border: 1px solid #DDD;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .project-gallery-cover {
+      width: 100%;
+      aspect-ratio: 5 / 2;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      background: #E8E4E0;
+    }
+
+    .project-gallery-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 58%;
+      display: block;
+    }
+
+    .project-gallery-cover canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .project-gallery-item:hover .project-gallery-cover canvas {
+      opacity: 1;
+    }
+
+    .project-gallery-info {
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .project-gallery-name {
+      font-family: var(--font-body);
+      font-weight: var(--weight-bold);
+      font-size: 13px;
+      color: #111;
+      margin-bottom: 4px;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-pixel {
+      font-family: var(--font-pixel-ui);
+      font-size: 9px;
+      background-color: var(--pixel-blue);
+      color: #FFFFFF;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .project-detail-view {
+      display: none;
+      padding: var(--space-4);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .project-detail-view.active { display: block; }
+    .projects-gallery.hidden { display: none; }
+
+    .project-detail-hero {
+      width: 100%;
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+      border: 1px solid #DDD;
+    }
+
+    .project-detail-hero img {
+      width: 100%;
+      border-radius: var(--radius-md);
+      display: block;
+    }
+
+    .project-detail-title {
+      font-family: var(--font-body);
+      font-weight: var(--weight-bold);
+      font-size: var(--text-h3);
+      color: #000;
+      margin-bottom: var(--space-2);
+    }
+
+    .project-detail-desc {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: var(--space-3);
+    }
+
+    .project-detail-section {
+      margin-bottom: var(--space-4);
+    }
+
+    .project-detail-section h4 {
+      font-family: var(--font-pixel-ui);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #999;
+      letter-spacing: 1px;
+      margin-bottom: var(--space-2);
+    }
+
+    .project-detail-highlights {
+      background: #F5F5F5;
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+      font-size: 13px;
+      line-height: 1.7;
+      color: #444;
+    }
+
+    .project-detail-links {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .project-detail-links a {
+      font-family: var(--font-pixel-ui);
+      font-size: 10px;
+      padding: 4px 10px;
+      background: var(--pixel-blue);
+      color: #FFF;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+    }
+
+    .project-detail-links a:hover { opacity: 0.85; }
+
+    /* iPhone 4s Contact section styling */
+    /* iPhone 4s/5s Simulator */
+    .iphone-sim-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: var(--space-4);
+      flex: 1;
+      background: #E0DDD8;
+    }
+
+    .iphone-mock {
+      width: 280px;
+      height: 540px;
+      background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+      border-radius: 36px;
+      border: 3px solid #555;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      padding: 50px 12px 50px 12px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .iphone-mock::before {
+      content: '';
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 5px;
+      background: #111;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .iphone-mock::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateX(36px);
+      width: 6px;
+      height: 6px;
+      background: #1a1a2e;
+      border-radius: 50%;
+      box-shadow: inset 0 0 2px rgba(0,0,0,0.8);
+    }
+
+    .iphone-home-btn {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+      cursor: pointer;
+    }
+
+    .iphone-home-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border: 1.5px solid #666;
+      border-radius: 3px;
+    }
+
+    .iphone-alert-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .iphone-alert-overlay.active {
+      display: flex;
+    }
+    .iphone-alert-box {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 14px;
+      width: 220px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .iphone-alert-title {
+      font-size: 28px;
+      padding: 16px 16px 4px;
+    }
+    .iphone-alert-msg {
+      font-size: 12px;
+      color: #333;
+      padding: 4px 16px 14px;
+      line-height: 1.5;
+    }
+    .iphone-alert-btn {
+      border-top: 1px solid #ccc;
+      padding: 10px;
+      color: #007AFF;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .iphone-alert-btn:hover {
+      background: rgba(0,0,0,0.05);
+    }
+
+    .iphone-copy-toast {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 100;
+    }
+    .iphone-copy-toast.active {
+      display: block;
+    }
+
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+    }
+
+    .iphone-wallpaper {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('backgrounds/contact-avartar.png');
+      background-size: cover;
+      background-position: center top;
+      z-index: 0;
+    }
+
+    .iphone-wallpaper::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.15);
+    }
+
+    .iphone-status-bar {
+      height: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .iphone-home-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    .iphone-app-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 24px 16px 12px;
+      align-content: start;
+    }
+
+    .iphone-app-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .iphone-app-icon:hover .iphone-app-img {
+      transform: scale(1.1);
+    }
+
+    .iphone-app-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: transform 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .iphone-app-name {
+      font-size: 9px;
+      color: #fff;
+      font-family: var(--font-body);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+    }
+
+    .iphone-dock {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .iphone-dock .iphone-app-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      font-size: 20px;
+    }
+
+    /* iPhone App Screens */
+    .iphone-app-screen {
+      position: absolute;
+      top: 18px; left: 0; right: 0; bottom: 0;
+      background: #f5f5f5;
+      z-index: 2;
+      display: none;
+      flex-direction: column;
+      animation: iphoneSlideIn 0.25s ease;
+    }
+
+    .iphone-app-screen.active {
+      display: flex;
+    }
+
+    @keyframes iphoneSlideIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .iphone-app-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      background: rgba(245,245,245,0.95);
+      border-bottom: 1px solid #ddd;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-body);
+    }
+
+    .iphone-app-back {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 8px 0 0;
+      color: #007AFF;
+    }
+
+    .iphone-app-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    /* SMS Form inside iPhone */
+    .iphone-sms-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .iphone-sms-form input,
+    .iphone-sms-form textarea,
+    .iphone-sms-form select {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-family: var(--font-body);
+      outline: none;
+      background: #fff;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .iphone-sms-form select {
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23999'/%3E%3C/svg%3E") no-repeat right 10px center;
+      padding-right: 24px;
+      color: #333;
+    }
+
+    .iphone-sms-form textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    .iphone-sms-form input:focus,
+    .iphone-sms-form textarea:focus,
+    .iphone-sms-form select:focus {
+      border-color: #007AFF;
+    }
+
+    .iphone-sms-send {
+      background: #007AFF;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 13px;
+      font-family: var(--font-body);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .iphone-sms-send:hover {
+      background: #0066DD;
+    }
+
+    .iphone-sms-send:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
+    .iphone-sms-status {
+      font-size: 11px;
+      text-align: center;
+      display: none;
+    }
+    .iphone-sms-status.success { color: #34C759; }
+    .iphone-sms-status.error { color: #FF3B30; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .form-label {
+      color: var(--pixel-blue);
+      font-weight: var(--weight-bold);
+    }
+
+    .form-input {
+      background-color: #FAFAFA;
+      border: 1px solid #CCCCCC;
+      color: var(--text-primary);
+      padding: var(--space-2);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      border-radius: var(--radius-sm);
+    }
+
+    .form-input:focus {
+      border-color: var(--pixel-blue);
+      background-color: var(--bg-elevated);
+      outline: none;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: pointer;
+    }
+
+    .form-status {
+      display: none;
+      border: 1px solid var(--matrix-green);
+      background-color: rgba(91, 186, 111, 0.1);
+      color: var(--matrix-green);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      margin-top: var(--space-3);
+    }
+
+    /* Playground window containing brick breaker canvas */
+    .playground-container {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .canvas-container {
+      border: 2px solid var(--border-dark);
+      background-color: var(--bg-dark);
+      border-radius: var(--radius-sm);
+      position: relative;
+    }
+
+    #gameCanvas {
+      display: block;
+      max-width: 100%;
+    }
+
+    .playground-controls {
+      display: flex;
+      gap: var(--space-3);
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Terminal window */
+    .terminal-container {
+      background-color: var(--bg-dark);
+      color: var(--matrix-green);
+      font-family: var(--font-mono);
+      font-size: var(--text-command);
+      padding: var(--space-3);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-history {
+      overflow-y: auto;
+      margin-bottom: var(--space-2);
+      line-height: 1.5;
+    }
+
+    .terminal-input-line {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .terminal-prompt {
+      color: var(--retro-pink);
+    }
+
+    .terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--matrix-green);
+      font-family: var(--font-mono);
+      font-size: var(--text-command);
+    }
+
+    .term-progress-bar {
+      width: 200px;
+      height: 12px;
+      border: 2px solid var(--matrix-green);
+      margin: 6px 0;
+      position: relative;
+      image-rendering: pixelated;
+    }
+    .term-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--matrix-green);
+      transition: width 0.05s linear;
+    }
+    .term-progress-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-command);
+      color: var(--matrix-green);
+      margin-bottom: 4px;
+    }
+
+    /* iPod Classic style window controller */
+    .ipod-inner {
+      background-color: #E6E4DF;
+      border: 1px solid #CCCCCC;
+      box-shadow: inset -1px -1px 0 #999, inset 1px 1px 0 #fff;
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-4);
+      height: 100%;
+      justify-content: center;
+    }
+
+    .ipod-screen-mock {
+      width: 200px;
+      height: 130px;
+      background-color: #92B4A7; /* vintage LCD light blue/green */
+      border: 3px solid #707070;
+      border-radius: var(--radius-sm);
+      padding: var(--space-2);
+      color: #222;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .ipod-screen-title {
+      font-weight: bold;
+      border-bottom: 1px solid #444;
+      padding-bottom: 2px;
+      text-align: center;
+    }
+
+    .ipod-screen-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .ipod-progress-bar {
+      height: 6px;
+      background-color: #555;
+      position: relative;
+      border-radius: 3px;
+    }
+
+    .ipod-progress-fill {
+      width: 30%;
+      height: 100%;
+      background-color: #000;
+      border-radius: 3px;
+    }
+
+    .ipod-wheel {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background-color: #fff;
+      border: 1px solid #c0c0c0;
+      box-shadow: 1px 2px 5px rgba(0,0,0,0.15);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .ipod-wheel-btn {
+      position: absolute;
+      font-family: var(--font-pixel-ui);
+      font-size: 9px;
+      color: #666;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .ipod-btn-menu { top: 12px; }
+    .ipod-btn-prev { left: 12px; }
+    .ipod-btn-next { right: 12px; }
+    .ipod-btn-play { bottom: 12px; }
+
+    .ipod-center-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: #E6E4DF;
+      border: 1px solid #c0c0c0;
+      box-shadow: inset 1px 1.5px 0 #fff;
+      cursor: pointer;
+    }
+
+    /* ─── 8. DOCK BAR (Smooth scale magnification & bounce animation) ─ */
+    .dock-container {
+      position: fixed;
+      bottom: var(--space-2);
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(240, 237, 229, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: var(--radius-lg);
+      padding: 6px 12px;
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-3);
+      z-index: var(--z-dock);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      height: 56px;
+      box-sizing: content-box;
+    }
+
+    .dock-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: width 0.15s ease, height 0.15s ease, transform 0.15s ease;
+      transform-origin: bottom center;
+    }
+
+    .dock-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: width 0.15s ease, height 0.15s ease;
+    }
+    .dock-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Dock magnification handled by JS inline styles */
+
+    /* App Bouncing animation triggers when clicked */
+    .dock-item.bouncing {
+      animation: dockBounce 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes dockBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-20px); }
+    }
+
+    .dock-tooltip {
+      position: absolute;
+      bottom: 75px;
+      background-color: var(--bg-dark);
+      color: var(--text-inverse);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-family: var(--font-pixel-ui);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--duration-base) var(--ease-default);
+      white-space: nowrap;
+    }
+
+    .dock-item:hover .dock-tooltip {
+      opacity: 1;
+    }
+
+    .dock-dot {
+      width: 5px;
+      height: 5px;
+      background-color: #404040;
+      border-radius: 50%;
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity var(--duration-base) var(--ease-default);
+    }
+
+    .dock-dot.active {
+      opacity: 1;
+    }
+
+    /* ─── 9. PIXEL DESKTOP PET "JINGER" (Robust Dragging Enabled) ────── */
+    .pixel-pet-container {
+      position: absolute;
+      bottom: 10px;
+      left: 100px;
+      width: 50px;
+      height: 50px;
+      z-index: var(--z-card);
+      cursor: grab;
+      user-select: none;
+      transition: left 1s ease;
+    }
+
+    .pixel-pet-container:active {
+      cursor: grabbing;
+    }
+
+    .pixel-pet {
+      width: 100%;
+      height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      image-rendering: pixelated;
+    }
+
+    @keyframes petWalk {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(2deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .pixel-pet-container.walking .pixel-pet {
+      animation: petWalk 0.35s infinite ease-in-out;
+    }
+
+    .pet-bubble {
+      position: absolute;
+      bottom: 55px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--bg-elevated);
+      border: 2px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      padding: var(--space-2);
+      font-family: var(--font-pixel-ui);
+      font-size: 10px;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+      white-space: nowrap;
+      pointer-events: none;
+      display: none;
+      z-index: var(--z-toast);
+    }
+
+    .pet-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--border-dark) transparent transparent transparent;
+    }
+
+    /* ─── 10. BILINGUAL MULTI-LANGUAGE DECORATORS ───────────────────── */
+    .lang-zh { display: inline-block; }
+    .lang-en { display: none; }
+    body.lang-en { display: block; }
+
+    body.lang-en .lang-zh { display: none; }
+    body.lang-en .lang-en { display: inline-block; }
+
+    /* Structural lang resets */
+    div.lang-zh, p.lang-zh { display: block; }
+    body.lang-en div.lang-zh, body.lang-en p.lang-zh { display: none; }
+    body.lang-en div.lang-en, body.lang-en p.lang-en { display: block; }
+
+    /* ─── 10b. VHS ARCHIVE — Stylesheet bridge ─────────────────────────── */
+    /* Real styles live in archive/archive.css. This line loads them.    */
+
+    /* ─── 11. RESPONSIVE DESIGN ADJUSTMENTS ───────────────────────────── */
+    @media (max-width: 768px) {
+      .desktop {
+        height: calc(100vh - 28px);
+        overflow-y: auto;
+        padding: var(--space-3);
+      }
+      .dock-container {
+        display: none; /* Hide dock in mobile layout stack */
+      }
+      .hero-container {
+        position: static;
+        margin-bottom: var(--space-4);
+        pointer-events: auto;
+      }
+      .desktop-icons {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        margin-bottom: var(--space-4);
+      }
+      .desktop-icon {
+        width: 72px;
+      }
+      .window:not(.closed) {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: var(--space-4) !important;
+        transform: none !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        box-shadow: var(--shadow-sm);
+      }
+      .window-header {
+        cursor: default;
+      }
+      .window-controls {
+        display: none;
+      }
+      .pixel-pet-container {
+        display: none;
+      }
+    }
+
+    /* Reduced Motion Accessibility rule */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+
+  <!-- ═══ VHS ARCHIVE — External CSS ═══ -->
+  <link rel="stylesheet" href="archive/archive.css">
+
+  <!-- ═══ VHS ARCHIVE — GSAP + MotionPathPlugin (free CDN) ═══ -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/MotionPathPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/Draggable.min.js"></script>
+</head>
+<body>
+
+  <!-- ─── 1. TOP MENU BAR (Platinum Style) ─── -->
+  <header class="menu-bar">
+    <div class="menu-left">
+      <!-- Apple Menu -->
+      <div class="menu-item-container">
+        <span class="menu-logo"><img src="icons/apple-logo.png" alt="Apple" style="height:20px;vertical-align:middle;margin-right:4px;">JingerOS</span>
+        <div class="menu-dropdown">
+          <div class="menu-dropdown-item" onclick="openWindow('win-about-os')">About JingerOS</div>
+        </div>
+      </div>
+      
+      <!-- Who is Jinger Dropdown menu on Hover -->
+      <div class="menu-item-container">
+        <span class="menu-trigger">Who is Jinger?</span>
+        <div class="menu-dropdown">
+          <div class="menu-dropdown-item" onclick="openWindow('win-about')">About me</div>
+          <div class="menu-dropdown-item" onclick="openWindow('win-experience')">Experiences</div>
+          <div class="menu-dropdown-item" onclick="openWindow('win-projects')">Projects</div>
+        </div>
+      </div>
+    </div>
+    <div class="menu-right">
+      <button class="lang-switch" onclick="toggleLanguage()" aria-label="Toggle Language">
+        <span class="lang-zh">EN</span>
+        <span class="lang-en">中</span>
+      </button>
+      <div class="clock-widget" id="menu-clock">10:03 PM</div>
+    </div>
+  </header>
+
+  <!-- ─── 2. DESKTOP MAIN WINDOW ─── -->
+  <main class="desktop" id="desktop-area">
+    
+    <!-- Hero / Welcome Info Panel -->
+    <div class="hero-container">
+      <h1 class="hero-title">JINGER ZHOU</h1>
+      <p class="hero-subtitle">AI Product Manager · AI Native Builder</p>
+      <div class="hero-quote">
+        <p class="lang-zh typewriter" data-text="从前翻译语言，现在翻译想法。"></p>
+        <p class="typewriter typewriter-line2" data-text="From words to code."></p>
+        <p class="typewriter typewriter-line2" data-text="Still translating."></p>
+      </div>
+    </div>
+
+    <!-- Desktop Folders & Interactive App Icons -->
+    <div class="desktop-icons" id="desktop-icons">
+      <div class="desktop-icon" data-win="win-about" tabindex="0" role="button" aria-label="About Me" style="right:30px;top:20px;">
+        <div class="icon-graphic"><img src="icons/biography.png" alt="Biography"></div>
+        <div class="icon-label">Biography</div>
+      </div>
+      <div class="desktop-icon" data-win="win-projects" tabindex="0" role="button" aria-label="Projects" style="right:130px;top:35px;">
+        <div class="icon-graphic"><img src="icons/projects.png" alt="Projects"></div>
+        <div class="icon-label">Projects</div>
+      </div>
+      <div class="desktop-icon" data-win="win-experience" tabindex="0" role="button" aria-label="Experience" style="right:30px;top:120px;">
+        <div class="icon-graphic"><img src="icons/experiences.png" alt="Experience"></div>
+        <div class="icon-label">Experience</div>
+      </div>
+      <div class="desktop-icon" data-win="win-contact" tabindex="0" role="button" aria-label="Contact" style="right:140px;top:140px;">
+        <div class="icon-graphic"><img src="icons/contact.png" alt="Contact"></div>
+        <div class="icon-label">Contact</div>
+      </div>
+      <div class="desktop-icon" data-win="win-playground" tabindex="0" role="button" aria-label="Playground" style="right:50px;top:240px;">
+        <div class="icon-graphic"><img src="icons/playground.png" alt="Playground"></div>
+        <div class="icon-label">Playground</div>
+      </div>
+      <div class="desktop-icon" data-win="win-ipod" tabindex="0" role="button" aria-label="iPod player" style="right:160px;top:250px;">
+        <div class="icon-graphic"><img src="icons/ipod.png" alt="iPod Player"></div>
+        <div class="icon-label">iPod Player</div>
+      </div>
+      <div class="desktop-icon" data-win="win-terminal" tabindex="0" role="button" aria-label="Terminal Shell" style="right:90px;top:340px;">
+        <div class="icon-graphic"><img src="icons/terminal.png" alt="Terminal"></div>
+        <div class="icon-label">Terminal</div>
+      </div>
+    </div>
+
+    <!-- ─── 3. WINDOWS SECTIONS ─── -->
+
+    <!-- Windows Section: About JingerOS (System standard info dialog) -->
+    <div class="window closed" id="win-about-os" style="width: 400px; height: 310px; left: calc(50% - 200px); top: 120px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-about-os')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-about-os')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-about-os')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">About JingerOS</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-content">
+        <div class="about-os-content">
+          <div class="about-os-logo">J</div>
+          <div class="about-os-title">JingerOS 2.0</div>
+          <p class="about-os-desc">
+            Personal portfolio built with high-fidelity vintage system elements. Inspired by classical Mac OS X GUI.
+          </p>
+          <p style="font-size: 11px; color: #888;">© 2026 Jinger Zhou. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Section: About Me (Biography) -->
+    <div class="window closed" id="win-about" style="width: 630px; height: 500px; left: 60px; top: 60px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-about')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-about')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-about')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">Biography</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-tabs">
+        <button class="window-tab-btn active" onclick="switchWindowTab('win-about', 'bio-general')">General</button>
+        <button class="window-tab-btn" onclick="switchWindowTab('win-about', 'bio-methodology')">Methodology</button>
+      </div>
+      <div class="window-content">
+        <!-- Tab 1: General Bio -->
+        <div class="tab-panel active" id="bio-general">
+          <div class="bio-container">
+            <div class="bio-graphic-placeholder"><img src="backgrounds/biography-avartar.jpg" alt="Jinger Zhou" style="width:100%;object-fit:contain;"></div>
+            <div class="bio-text-area">
+              <div class="lang-zh">
+                <p><strong>周静儿 / Jinger Zhou</strong></p>
+                <p>我不是传统软件开发出身——我的本硕教育专注于英语翻译及传媒笔译。2025年我第一次打开了 Claude Code，那一刻改变了我的职业轨迹。</p>
+                <p>我发现自己真正擅长的是<strong>“翻译业务需求与技术系统之间的鸿沟”</strong>。通过 Vibe Coding，我在6个月里从零独立搭建并交付了5个全栈AI项目。</p>
+                <p>我是AI时代能够快速交付、闭环思路的AI Native Builder。</p>
+              </div>
+              <div class="lang-en">
+                <p><strong>Jinger Zhou</strong></p>
+                <p>My academic foundation lies in English Translation and Media Translation. In 2025, my first exploration with Claude Code entirely transformed my perspective.</p>
+                <p>I realized my ultimate superpower: <strong>bridging the communicative divide between product goals and AI architecture</strong>. Over 6 months, I fully built and shipped 5 projects via Vibe Coding.</p>
+                <p>I am an AI Native Builder engineered to design, prompt, and ship fast.</p>
+              </div>
+              
+              <table class="bio-stats-table">
+                <tr>
+                  <td class="label">Location</td>
+                  <td>Guangzhou, China (📍广州)</td>
+                </tr>
+                <tr>
+                  <td class="label">Focus</td>
+                  <td>AI Product Management / AI Engineering</td>
+                </tr>
+                <tr>
+                  <td class="label">Languages</td>
+                  <td>Mandarin (Native) / English (IELTS 7.5) / French (Learning)</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tab 2: Methodology -->
+        <div class="tab-panel" id="bio-methodology">
+          <div style="font-family: var(--font-body); line-height: 1.6;">
+            <h3 style="margin-bottom: var(--space-3); border-bottom: 1px solid #CCC; padding-bottom: 4px;">My Prompt Engineering & AI PM Playbook</h3>
+            <div class="exp-list-item">
+              <p><strong>1. Handover Skill</strong></p>
+              <p style="color: #555; font-size: 13px;">Structuring transition markdown notes between sessions to bypass context limit rot on large-scale builds.</p>
+            </div>
+            <div class="exp-list-item">
+              <p><strong>2. Reflective System Design</strong></p>
+              <p style="color: #555; font-size: 13px;">Automatically updating runtime instruction rules inside active prompts upon module refactoring.</p>
+            </div>
+            <div class="exp-list-item">
+              <p><strong>3. Dual-Language Requirement Translation</strong></p>
+              <p style="color: #555; font-size: 13px;">My linguistic master's background enables highly precise, non-ambiguous specifications compiled directly for LLMs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Section: Projects -->
+    <div class="window closed" id="win-projects" style="width: 700px; height: 530px; left: 100px; top: 100px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-projects')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-projects')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-projects')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">Projects</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="projects-nav" id="projects-nav">
+        <button class="projects-nav-btn" id="proj-back-btn" onclick="projectGoBack()" disabled>&#9664;</button>
+        <button class="projects-nav-btn" id="proj-fwd-btn" disabled>&#9654;</button>
+        <span class="projects-nav-title" id="proj-nav-title">All Projects</span>
+      </div>
+      <div class="window-content" style="display:flex;flex-direction:column;">
+
+        <div class="projects-gallery" id="projects-gallery">
+          <div class="project-gallery-item" onclick="openProjectDetail('remoire')">
+            <div class="project-gallery-cover">
+              <img src="screenshots/remoire/Cover-remoire.jpg" alt="Remoire">
+              <canvas></canvas>
+            </div>
+            <div class="project-gallery-info">
+              <div class="project-gallery-name lang-zh">Remoire — AI 记忆伴侣</div>
+              <div class="project-gallery-name lang-en">Remoire — AI Companion</div>
+              <div class="project-tags">
+                <span class="tag-pixel">Fullstack</span>
+                <span class="tag-pixel">MCP</span>
+                <span class="tag-pixel">Vector DB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-gallery-item" onclick="openProjectDetail('chatbox')">
+            <div class="project-gallery-cover">
+              <img src="screenshots/chatbox/cover-chatbox.jpg" alt="AI Chatbox">
+              <canvas></canvas>
+            </div>
+            <div class="project-gallery-info">
+              <div class="project-gallery-name lang-zh">AI Chatbox — 角色扮演聊天</div>
+              <div class="project-gallery-name lang-en">AI Chatbox — RP Chat</div>
+              <div class="project-tags">
+                <span class="tag-pixel">Web App</span>
+                <span class="tag-pixel">AI Chat</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-gallery-item" onclick="openProjectDetail('xhs')">
+            <div class="project-gallery-cover">
+              <img src="screenshots/generator/cover-gen.jpg" alt="Image Generator">
+              <canvas></canvas>
+            </div>
+            <div class="project-gallery-info">
+              <div class="project-gallery-name lang-zh">小红书图文生成器</div>
+              <div class="project-gallery-name lang-en">Rednote Image Generator</div>
+              <div class="project-tags">
+                <span class="tag-pixel">Canvas</span>
+                <span class="tag-pixel">Automation</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-gallery-item" onclick="openProjectDetail('careerforge')">
+            <div class="project-gallery-cover">
+              <img src="screenshots/careerforge/cover-cf.jpg" alt="CareerForge">
+              <canvas></canvas>
+            </div>
+            <div class="project-gallery-info">
+              <div class="project-gallery-name lang-zh">CareerForge — AI 求职助手</div>
+              <div class="project-gallery-name lang-en">CareerForge — AI Career Kit</div>
+              <div class="project-tags">
+                <span class="tag-pixel">Open Source</span>
+                <span class="tag-pixel">104+ Stars</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-gallery-item" onclick="openProjectDetail('french')">
+            <div class="project-gallery-cover">
+              <img src="screenshots/frenchquest/cover-fq.jpg" alt="Français Quest">
+              <canvas></canvas>
+            </div>
+            <div class="project-gallery-info">
+              <div class="project-gallery-name lang-zh">Français Quest — 法语学习</div>
+              <div class="project-gallery-name lang-en">Français Quest — French Learning</div>
+              <div class="project-tags">
+                <span class="tag-pixel">Education</span>
+                <span class="tag-pixel">Gamification</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-detail-view" id="project-detail-remoire">
+          <div class="project-detail-hero"><img src="screenshots/remoire/Cover-remoire.jpg" alt="Remoire"></div>
+          <h3 class="project-detail-title lang-zh">Remoire — AI 记忆伴侣系统</h3>
+          <h3 class="project-detail-title lang-en">Remoire — AI Companion System</h3>
+          <p class="project-detail-desc lang-zh">专注于让 AI 拥有"长期精准持久记忆"的陪伴产品。打破一次性聊天束缚，打造持续性的数字伴侣关系空间。利用自建 MCP 服务搭建持久化存储记忆管道，配合多层语义检索机制，在数周或数月后的会话中仍能自动关联用户偏好信息。</p>
+          <p class="project-detail-desc lang-en">An advanced AI companion designed around robust long-term semantic alignment pipelines. Constructed dynamic MCP integration pipelines for semantic DB storage. Retrieves and injects user profile contextual markers across week-long context breaks.</p>
+          <div class="project-detail-section">
+            <h4>Highlights</h4>
+            <div class="project-detail-highlights lang-zh">集成 300+ 结构化长期记忆字段 · 支持四层分级记忆系统 · 精算控制单人月度 API 消耗仅 ¥15-50</div>
+            <div class="project-detail-highlights lang-en">Managed 300+ long-term profiles · Quad-tier memory resolution · Monthly runtime cost controlled to ¥15-50</div>
+          </div>
+          <div class="project-detail-section">
+            <h4>Tech Stack</h4>
+            <div class="project-tags"><span class="tag-pixel">Fullstack</span><span class="tag-pixel">Claude Code</span><span class="tag-pixel">MCP</span><span class="tag-pixel">Vector DB</span></div>
+          </div>
+          <div class="project-detail-links">
+            <a href="https://github.com/rebecha1227-a11y/remoire" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-detail-view" id="project-detail-chatbox">
+          <div class="project-detail-hero"><img src="screenshots/chatbox/cover-chatbox.jpg" alt="AI Chatbox"></div>
+          <h3 class="project-detail-title lang-zh">AI Chatbox — 角色扮演聊天工具</h3>
+          <h3 class="project-detail-title lang-en">AI Chatbox — RP Chat Tool</h3>
+          <p class="project-detail-desc lang-zh">一个 Web App 形态的 AI 聊天界面，支持角色扮演对话和多种 AI 模型切换，提供沉浸式的聊天体验。</p>
+          <p class="project-detail-desc lang-en">A web-based AI chat interface supporting role-play conversations and multi-model switching, delivering immersive conversational experiences.</p>
+          <div class="project-detail-section">
+            <h4>Tech Stack</h4>
+            <div class="project-tags"><span class="tag-pixel">Web App</span><span class="tag-pixel">AI Chat</span><span class="tag-pixel">Vibe Coding</span></div>
+          </div>
+        </div>
+
+        <div class="project-detail-view" id="project-detail-xhs">
+          <div class="project-detail-hero"><img src="screenshots/generator/cover-gen.jpg" alt="Image Generator"></div>
+          <h3 class="project-detail-title lang-zh">小红书爆款内容自动化工具</h3>
+          <h3 class="project-detail-title lang-en">Rednote Image Generator</h3>
+          <p class="project-detail-desc lang-zh">一站式小红书爆款笔记制图与标签排版工具。将原本痛苦低效的 30 分钟内容生成压缩至 1 分钟。提供内置模版，非技术背景内容创作者也能通过预设样式快速生成高转化效果的文章头图和文字配图。</p>
+          <p class="project-detail-desc lang-en">Xiaohongshu card graphic automated generator. Accelerates visual framing and markdown layout compiling pipelines from 30 minutes to under 60 seconds. Built lightweight canvas layout presets for non-designers.</p>
+          <div class="project-detail-section">
+            <h4>Highlights</h4>
+            <div class="project-detail-highlights lang-zh">集成多套爆款设计版式 · 全客户端 Canvas 高速渲染 · 用户好评高转化率</div>
+            <div class="project-detail-highlights lang-en">High-CTR layout templates · Full client-side canvas render · High user conversion rate</div>
+          </div>
+          <div class="project-detail-section">
+            <h4>Tech Stack</h4>
+            <div class="project-tags"><span class="tag-pixel">Canvas</span><span class="tag-pixel">Automation</span><span class="tag-pixel">Vibe Coding</span></div>
+          </div>
+          <div class="project-detail-links">
+            <a href="https://github.com/rebecha1227-a11y" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-detail-view" id="project-detail-careerforge">
+          <div class="project-detail-hero"><img src="screenshots/careerforge/cover-cf.jpg" alt="CareerForge"></div>
+          <h3 class="project-detail-title lang-zh">CareerForge — AI 求职工具箱</h3>
+          <h3 class="project-detail-title lang-en">CareerForge — AI Career Toolkit</h3>
+          <p class="project-detail-desc lang-zh">AI 驱动的完整求职链路助手。包含简历精修润色、Cover Letter 生成、以及交互模拟面试系统。基于大语言模型对简历和目标职位（JD）进行深度特征重构匹配，自带高兼容 PDF 排版自动输出模块。</p>
+          <p class="project-detail-desc lang-en">AI-native candidate lifecycle toolkit. Streamlines structural resume audits, dynamic cover letter generation, and real-time mock interviews. Supports automated programmatic PDF formatting exports.</p>
+          <div class="project-detail-section">
+            <h4>Highlights</h4>
+            <div class="project-detail-highlights lang-zh">开源并获得 104+ GitHub Stars · 免配置在线快捷打包 · 零排版出错率</div>
+            <div class="project-detail-highlights lang-en">Gained 104+ Stars on GitHub · Serverless static build integration · Zero formatting errors</div>
+          </div>
+          <div class="project-detail-section">
+            <h4>Tech Stack</h4>
+            <div class="project-tags"><span class="tag-pixel">Open Source</span><span class="tag-pixel">Claude Code Skill</span><span class="tag-pixel">PDF Generation</span></div>
+          </div>
+          <div class="project-detail-links">
+            <a href="https://github.com/rebecha1227-a11y" target="_blank">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-detail-view" id="project-detail-french">
+          <div class="project-detail-hero"><img src="screenshots/frenchquest/cover-fq.jpg" alt="Français Quest"></div>
+          <h3 class="project-detail-title lang-zh">Français Quest — 法语闯关学习</h3>
+          <h3 class="project-detail-title lang-en">Français Quest — French Learning</h3>
+          <p class="project-detail-desc lang-zh">游戏化法语学习网站，通过闯关模式、互动练习和即时反馈，让语言学习变得有趣高效。</p>
+          <p class="project-detail-desc lang-en">A gamified French learning website with level-based progression, interactive exercises, and instant feedback for engaging language acquisition.</p>
+          <div class="project-detail-section">
+            <h4>Tech Stack</h4>
+            <div class="project-tags"><span class="tag-pixel">Education</span><span class="tag-pixel">Gamification</span><span class="tag-pixel">Vibe Coding</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Windows Section: Experience -->
+    <div class="window closed" id="win-experience" style="width: 550px; height: 500px; left: 140px; top: 140px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-experience')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-experience')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-experience')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">Experiences</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-tabs">
+        <button class="window-tab-btn active" onclick="switchWindowTab('win-experience', 'exp-professional')">Professional</button>
+        <button class="window-tab-btn" onclick="switchWindowTab('win-experience', 'exp-academic')">Academic</button>
+      </div>
+      <div class="window-content">
+        <!-- Professional experiences tab -->
+        <div class="tab-panel active" id="exp-professional">
+          <div class="exp-list-item">
+            <div class="exp-item-header">
+              <span class="exp-item-title lang-zh">AI Native Builder 转型实践</span>
+              <span class="exp-item-title lang-en">AI Native Builder Experience</span>
+              <span class="exp-item-year">2025-Current</span>
+            </div>
+            <div class="exp-item-org">Vibe Coding Builder</div>
+            <p class="exp-item-desc lang-zh">6个月内独立构思并交付5+项AI应用。开源求职系统斩获过百Stars，小红书原创AI工具干货收获万级点赞、收藏。</p>
+            <p class="exp-item-desc lang-en">Sought and built 5+ personal SaaS platforms completely driven by AI pairing and compiler automation. Acclaimed notable open source and social validation.</p>
+          </div>
+
+          <div class="exp-list-item">
+            <div class="exp-item-header">
+              <span class="exp-item-title lang-zh">新东方 SFK · 留学申请指导</span>
+              <span class="exp-item-title lang-en">New Oriental SFK · Portfolio Advisor</span>
+              <span class="exp-item-year">2023-2024</span>
+            </div>
+            <div class="exp-item-org">New Oriental Education Group</div>
+            <p class="exp-item-desc lang-zh">精修与策划超 500+ 项目方案与个人陈述。在辅导文书工作中培养了极强的高效需求提取和跨行业知识拆解能力。</p>
+            <p class="exp-item-desc lang-en">Iterated visual and conceptual portfolios for 500+ creative applications. Strengthened deep requirements extraction skills.</p>
+          </div>
+
+          <div class="exp-list-item">
+            <div class="exp-item-header">
+              <span class="exp-item-title lang-zh">树根互联 · 翻译实习生 (产品方向)</span>
+              <span class="exp-item-title lang-en">ROOTCLOUD · Localization Intern</span>
+              <span class="exp-item-year">2022</span>
+            </div>
+            <div class="exp-item-org">ROOTCLOUD IoT platform</div>
+            <p class="exp-item-desc lang-zh">主导 10 万+ 字工业互联网核心架构及操作技术文档翻译。协助产品调研及海外用户文档路径优化。</p>
+            <p class="exp-item-desc lang-en">Coordinated technical localization and competitive analysis for top-tier industrial IoT product lines.</p>
+          </div>
+        </div>
+
+        <!-- Academic tab -->
+        <div class="tab-panel" id="exp-academic">
+          <div class="exp-list-item">
+            <div class="exp-item-header">
+              <span class="exp-item-title lang-zh">广东外语外贸大学 · 翻译硕士</span>
+              <span class="exp-item-title lang-en">GDUFS · M.A. in Media Translation</span>
+              <span class="exp-item-year">2021</span>
+            </div>
+            <p class="exp-item-desc lang-zh">英语翻译硕士（传媒译审方向）。GPA 3.8/4.0。曾担任71人协作学术审校小组组长。</p>
+            <p class="exp-item-desc lang-en">Specialized in Media Translation. GPA 3.8/4.0. Directed a collaborative research group consisting of 71 reviewers.</p>
+          </div>
+          
+          <div class="exp-list-item">
+            <div class="exp-item-header">
+              <span class="exp-item-title lang-zh">浙江农林大学 · 英语学士</span>
+              <span class="exp-item-title lang-en">ZAFU · B.A. in English</span>
+              <span class="exp-item-year">2017</span>
+            </div>
+            <p class="exp-item-desc lang-zh">英语专业本科。GPA 3.85/4.0，位居专业前 5%，获得校一等奖学金。</p>
+            <p class="exp-item-desc lang-en">B.A. in English. GPA 3.85/4.0, ranking top 5% among majors.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Section: Contact (with iPhone 4s mock) -->
+    <div class="window closed" id="win-contact" style="width: 380px; height: 660px; left: 200px; top: 40px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-contact')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-contact')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-contact')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">Contact Me</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-content" style="padding:0;overflow:hidden;">
+        <div class="iphone-sim-wrapper">
+          <div class="iphone-mock">
+            <div class="iphone-screen">
+              <div class="iphone-wallpaper"></div>
+              <div class="iphone-status-bar">
+                <span>JingerOS</span>
+                <span id="iphone-time-2">10:03</span>
+                <span>📶 100%</span>
+              </div>
+              <div class="iphone-home-screen" id="iphone-home-screen">
+                <div class="iphone-app-grid">
+                  <div class="iphone-app-icon" onclick="iphoneCopyEmail()" style="cursor:pointer;">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#5EB3F6,#1D8AED);">✉️</div>
+                    <span class="iphone-app-name">Mail</span>
+                  </div>
+                  <a class="iphone-app-icon" href="https://github.com/rebecha1227-a11y" target="_blank">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#333,#111);">🐈</div>
+                    <span class="iphone-app-name">GitHub</span>
+                  </a>
+                  <a class="iphone-app-icon" href="https://xhslink.com/m/5D9021FcWWO" target="_blank">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#FF4040,#CC2020);">📕</div>
+                    <span class="iphone-app-name lang-zh">小红书</span>
+                    <span class="iphone-app-name lang-en">Rednote</span>
+                  </a>
+                  <a class="iphone-app-icon" href="https://www.linkedin.com/in/%E9%9D%99%E5%84%BF-%E5%91%A8-823a06241/?locale=zh-CN" target="_blank">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#0A78B5,#004E7C);">in</div>
+                    <span class="iphone-app-name">LinkedIn</span>
+                  </a>
+                  <div style="width:50px;"></div>
+                  <a class="iphone-app-icon" href="周静儿-简历Resume.pdf" target="_blank">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#5AC8FA,#34AAD5);">📄</div>
+                    <span class="iphone-app-name lang-zh">简历</span>
+                    <span class="iphone-app-name lang-en">Resume</span>
+                  </a>
+                </div>
+                <div class="iphone-dock">
+                  <div class="iphone-app-icon" onclick="iphoneCall()" style="cursor:pointer;">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#4CD964,#30B545);">📞</div>
+                  </div>
+                  <div class="iphone-app-icon" onclick="iphoneOpenSMS()" style="cursor:pointer;">
+                    <div class="iphone-app-img" style="background:linear-gradient(135deg,#4CD964,#30B545);">💬</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="iphone-app-screen" id="iphone-sms-screen">
+                <div class="iphone-app-header">
+                  <button class="iphone-app-back" onclick="iphoneCloseSMS()">‹</button>
+                  <span lang-zh>短信 / Messages</span>
+                </div>
+                <div class="iphone-app-body">
+                  <form class="iphone-sms-form" id="iphone-sms-form" onsubmit="iphoneSendSMS(event)">
+                    <input type="hidden" name="access_key" value="426810ee-51e8-4816-933b-7554c6f9ba63">
+                    <input type="hidden" name="subject" value="JingerOS 作品集有人联系你">
+                    <select name="purpose" required>
+                      <option value="" disabled selected>找我做什么？</option>
+                      <option value="招聘/工作机会">💼 招聘 / 工作机会</option>
+                      <option value="项目合作">🤝 项目合作</option>
+                      <option value="交流学习">💬 交流学习</option>
+                      <option value="其他">📎 其他</option>
+                    </select>
+                    <input type="email" name="email" placeholder="你的邮箱" required>
+                    <textarea name="message" placeholder="留言..." required></textarea>
+                    <button type="submit" class="iphone-sms-send" id="iphone-sms-btn">发送</button>
+                  </form>
+                  <div class="iphone-sms-status" id="iphone-sms-status"></div>
+                </div>
+              </div>
+            </div>
+            <div class="iphone-alert-overlay" id="iphone-alert-overlay">
+              <div class="iphone-alert-box">
+                <div class="iphone-alert-title">📞</div>
+                <div class="iphone-alert-msg">您拨打的用户正在通话中，请通过邮箱联系她吧！</div>
+                <div class="iphone-alert-btn" onclick="iphoneCloseAlert()">好的</div>
+              </div>
+            </div>
+            <div class="iphone-copy-toast" id="iphone-copy-toast">Copied!</div>
+            <div class="iphone-home-btn" onclick="iphoneGoHome()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Section: Playground (Snake Game) -->
+    <div class="window closed" id="win-playground" style="width: 520px; height: 490px; left: 120px; top: 120px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-playground')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-playground')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-playground')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">Playground — Snake.exe</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-content">
+        <div class="playground-container">
+          <p class="lang-zh" style="font-size: var(--text-sm); text-align: center;">8位像素游戏机：使用键盘方向键操控贪吃蛇吃掉像素块。</p>
+          <p class="lang-en" style="font-size: var(--text-sm); text-align: center;">8-bit Retro Machine: Use Arrow Keys to navigate the snake and eat pixels.</p>
+          
+          <div class="canvas-container">
+            <canvas id="gameCanvas" width="400" height="300"></canvas>
+          </div>
+
+          <div class="playground-controls">
+            <button class="btn-retro" onclick="startGame()">[ Run / Restart ]</button>
+            <button class="btn-retro" onclick="stopGame()">[ Pause ]</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Section: iPod Audio Player -->
+    <div class="window closed" id="win-ipod" style="width: 320px; height: 420px; left: 240px; top: 60px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-ipod')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-ipod')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-ipod')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">iPod Player</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-content" style="background-color: #E6E4DF;">
+        <div class="ipod-inner">
+          <div class="ipod-screen-mock">
+            <div class="ipod-screen-title">Now Playing</div>
+            <div class="ipod-screen-info">
+              <span id="ipod-track-title" style="font-weight: bold;">Chiptune Vibe</span>
+              <span id="ipod-track-artist">Oscillator Synth</span>
+              <span id="ipod-track-time" style="font-size: 10px; color:#555;">0:00 / 0:00</span>
+            </div>
+            <div class="ipod-progress-bar">
+              <div class="ipod-progress-fill" id="ipod-fill"></div>
+            </div>
+          </div>
+
+          <div class="ipod-wheel">
+            <button class="ipod-wheel-btn ipod-btn-menu" onclick="ipodMenu()">MENU</button>
+            <button class="ipod-wheel-btn ipod-btn-prev" onclick="ipodPrev()">⏮</button>
+            <button class="ipod-wheel-btn ipod-btn-next" onclick="ipodNext()">⏭</button>
+            <button class="ipod-wheel-btn ipod-btn-play" onclick="ipodToggle()">▶⏸</button>
+            <div class="ipod-center-button" onclick="ipodToggle()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows Section: Terminal App -->
+    <div class="window closed" id="win-terminal" style="width: 550px; height: 350px; left: 180px; top: 180px;">
+      <div class="window-header">
+        <div class="window-controls">
+          <button class="control-btn btn-close" onclick="closeWindow('win-terminal')" aria-label="Close Window"></button>
+          <button class="control-btn btn-minimize" onclick="minimizeWindow('win-terminal')" aria-label="Minimize Window"></button>
+          <button class="control-btn btn-maximize" onclick="toggleMaximize('win-terminal')" aria-label="Maximize Window"></button>
+        </div>
+        <span class="window-title">🖥️ Terminal — jingeros:~$</span>
+        <div class="window-spacer"></div>
+      </div>
+      <div class="window-content" style="background-color: var(--bg-dark);">
+        <div class="terminal-container">
+          <div class="terminal-history" id="term-history">
+            <div>JingerOS command prompt v1.0.0. Type 'help' to start.</div>
+            <br>
+          </div>
+          <div class="terminal-input-line">
+            <span class="terminal-prompt">jingeros:~$</span>
+            <input type="text" class="terminal-input" id="term-input" autocomplete="off" autofocus aria-label="Terminal user input">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── 8. PIXEL DESKTOP PET "JINGER" (Draggable enabled) ─── -->
+    <div class="pixel-pet-container" id="jinger-pet" style="left: 150px;">
+      <div class="pet-bubble" id="pet-bubble-txt">Hello world!</div>
+      <div class="pixel-pet" onclick="triggerPetDialogue()">
+        <svg viewBox="0 0 16 16" width="100%" height="100%" style="display: block;">
+          <rect x="5" y="1" width="6" height="1" fill="#1A1A2E"/>
+          <rect x="4" y="2" width="8" height="2" fill="#E8839B"/>
+          <rect x="3" y="4" width="10" height="2" fill="#1A1A2E"/>
+          <rect x="4" y="6" width="8" height="3" fill="#F0EDE5"/>
+          <rect x="5" y="7" width="1" height="1" fill="#4A9EE5"/>
+          <rect x="10" y="7" width="1" height="1" fill="#4A9EE5"/>
+          <rect x="4" y="8" width="1" height="1" fill="#E8839B"/>
+          <rect x="11" y="8" width="1" height="1" fill="#E8839B"/>
+          <rect x="4" y="9" width="8" height="4" fill="#4A9EE5"/>
+          <rect x="5" y="10" width="6" height="2" fill="#FFFFFF"/>
+          <rect x="5" y="13" width="2" height="2" fill="#1A1A2E" id="pet-l-leg"/>
+          <rect x="9" y="13" width="2" height="2" fill="#1A1A2E" id="pet-r-leg"/>
+        </svg>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ─── 9. BOTTOM DOCK BAR ─── -->
+  <footer class="dock-container">
+    <div class="dock-item" id="dock-item-win-about" onclick="triggerAppActivation('win-about', 'dock-item-win-about')" role="button" aria-label="About Me Profile">
+      <div class="dock-icon"><img src="icons/biography.png" alt="Biography"></div>
+      <div class="dock-tooltip">Biography</div>
+      <div class="dock-dot" id="dot-win-about"></div>
+    </div>
+    <div class="dock-item" id="dock-item-win-projects" onclick="triggerAppActivation('win-projects', 'dock-item-win-projects')" role="button" aria-label="Projects list">
+      <div class="dock-icon"><img src="icons/projects.png" alt="Projects"></div>
+      <div class="dock-tooltip">Projects</div>
+      <div class="dock-dot" id="dot-win-projects"></div>
+    </div>
+    <div class="dock-item" id="dock-item-win-experience" onclick="triggerAppActivation('win-experience', 'dock-item-win-experience')" role="button" aria-label="Experience records">
+      <div class="dock-icon"><img src="icons/experiences.png" alt="Experience"></div>
+      <div class="dock-tooltip">Experience</div>
+      <div class="dock-dot" id="dot-win-experience"></div>
+    </div>
+    <div class="dock-item" id="dock-item-win-contact" onclick="triggerAppActivation('win-contact', 'dock-item-win-contact')" role="button" aria-label="Contact options">
+      <div class="dock-icon"><img src="icons/contact.png" alt="Contact"></div>
+      <div class="dock-tooltip">Contact</div>
+      <div class="dock-dot" id="dot-win-contact"></div>
+    </div>
+    <div class="dock-item" id="dock-item-win-playground" onclick="triggerAppActivation('win-playground', 'dock-item-win-playground')" role="button" aria-label="Play retro mini game">
+      <div class="dock-icon"><img src="icons/playground.png" alt="Playground"></div>
+      <div class="dock-tooltip">Playground</div>
+      <div class="dock-dot" id="dot-win-playground"></div>
+    </div>
+    <div class="dock-item" id="dock-item-win-ipod" onclick="triggerAppActivation('win-ipod', 'dock-item-win-ipod')" role="button" aria-label="Play music with iPod">
+      <div class="dock-icon"><img src="icons/ipod.png" alt="iPod Player"></div>
+      <div class="dock-tooltip">iPod Player</div>
+      <div class="dock-dot" id="dot-win-ipod"></div>
+    </div>
+    <div class="dock-item" id="dock-item-win-terminal" onclick="triggerAppActivation('win-terminal', 'dock-item-win-terminal')" role="button" aria-label="Open CLI console">
+      <div class="dock-icon"><img src="icons/terminal.png" alt="Terminal"></div>
+      <div class="dock-tooltip">Terminal</div>
+      <div class="dock-dot" id="dot-win-terminal"></div>
+    </div>
+  </footer>
+
+  <!-- ─── 10. INTERACTIVE SCRIPTS ─── -->
+  <script>
+    // System zIndex tracking
+    let globalZIndex = 300;
+    const initialPositions = {};
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Initiate System Clock update loop
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // 2. Map Window positioning and setup Drags
+      const allWindows = document.querySelectorAll('.window');
+      allWindows.forEach((win) => {
+        initialPositions[win.id] = {
+          left: win.style.left,
+          top: win.style.top,
+          width: win.style.width,
+          height: win.style.height
+        };
+        makeDraggable(win);
+        win.addEventListener('mousedown', () => bringToFront(win));
+      });
+
+      // 3. No default window — show clean desktop
+
+      // 4. Start terminal prompt controller
+      initTerminal();
+
+      // 5. Initiate Pixel Pet companion
+      startPetWalkRoutine();
+      makePetDraggable();
+
+      // 6. Setup Audio engine for the virtual synth iPod
+      initIpodAudio();
+
+      // 7. Bind interactive mouse click sounds
+      document.addEventListener('mousedown', playClickSound);
+
+      // 8. Bind smooth Dock magnification tracker
+      initDockMagnifier();
+
+      // 9. Init project gallery particle effects
+      initProjectParticles();
+
+      // 10. Typewriter effect for hero quote
+      initTypewriter();
+
+      // 11. Desktop icon drag
+      initIconDrag();
+
+      // 12. Window resize handles
+      initWindowResize();
+    });
+
+    // ─── AUDIO: CRISP CLICK SOUND ───
+    function playClickSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const t = ctx.currentTime;
+        const buf = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.15));
+        }
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        const hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 3000;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.12, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
+        src.connect(hp);
+        hp.connect(gain);
+        gain.connect(ctx.destination);
+        src.start(t);
+        src.stop(t + 0.02);
+      } catch (e) {}
+    }
+
+    // ─── TYPEWRITER EFFECT ───
+    let typewriterTimer = null;
+    function initTypewriter() {
+      if (typewriterTimer) clearTimeout(typewriterTimer);
+      const allSpans = document.querySelectorAll('.hero-quote .typewriter');
+      var oldCursor = document.querySelector('.typewriter-cursor');
+      if (oldCursor) oldCursor.remove();
+      const visible = [];
+      allSpans.forEach(function(span) {
+        span.textContent = '';
+        if (span.offsetParent !== null) visible.push(span);
+      });
+      if (visible.length === 0) {
+        allSpans.forEach(function(s) { s.textContent = s.getAttribute('data-text'); });
+        return;
+      }
+      var cursor = document.createElement('span');
+      cursor.className = 'typewriter-cursor';
+      cursor.textContent = '|';
+      let lineIdx = 0;
+      function typeLine() {
+        if (lineIdx >= visible.length) {
+          cursor.remove();
+          return;
+        }
+        var span = visible[lineIdx];
+        var text = span.getAttribute('data-text');
+        span.textContent = '';
+        span.appendChild(cursor);
+        let i = 0;
+        function tick() {
+          if (i < text.length) {
+            cursor.before(text.charAt(i));
+            i++;
+            typewriterTimer = setTimeout(tick, 70 + Math.random() * 40);
+          } else {
+            lineIdx++;
+            typewriterTimer = setTimeout(typeLine, 400);
+          }
+        }
+        tick();
+      }
+      typewriterTimer = setTimeout(typeLine, 300);
+    }
+
+    // ─── DESKTOP ICON DRAG ───
+    function initIconDrag() {
+      const icons = document.querySelectorAll('.desktop-icon');
+      icons.forEach(function(icon) {
+        if (icon.style.right) {
+          icon.style.left = icon.offsetLeft + 'px';
+          icon.style.right = '';
+        }
+        let dragged = false;
+        let startX, startY, origX, origY;
+        icon.addEventListener('mousedown', function(e) {
+          if (e.button !== 0) return;
+          dragged = false;
+          startX = e.clientX;
+          startY = e.clientY;
+          origX = icon.offsetLeft;
+          origY = icon.offsetTop;
+          icon.classList.add('dragging');
+          function onMove(e2) {
+            const dx = e2.clientX - startX;
+            const dy = e2.clientY - startY;
+            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragged = true;
+            icon.style.left = (origX + dx) + 'px';
+            icon.style.top = (origY + dy) + 'px';
+          }
+          function onUp() {
+            icon.classList.remove('dragging');
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+            if (!dragged) {
+              const winId = icon.getAttribute('data-win');
+              if (winId) openWindow(winId);
+            }
+          }
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+          e.preventDefault();
+        });
+      });
+    }
+
+    // ─── CLOCK UPDATE UTILS ───
+    function updateClock() {
+      const clockEl = document.getElementById('menu-clock');
+      const iphoneTimeEl = document.getElementById('iphone-time');
+      const now = new Date();
+      let hours = now.getHours();
+      const mins = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      
+      // Formatting
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      
+      const formString = `${hours}:${mins} ${ampm}`;
+      if (clockEl) clockEl.textContent = formString;
+      if (iphoneTimeEl) iphoneTimeEl.textContent = `${hours}:${mins}`;
+      const iphoneTime2 = document.getElementById('iphone-time-2');
+      if (iphoneTime2) iphoneTime2.textContent = `${hours}:${mins}`;
+    }
+
+    // ─── LANGUAGE SWITCH TOGGLE ───
+    function toggleLanguage() {
+      document.body.classList.toggle('lang-en');
+      initTypewriter();
+    }
+
+    // ─── SEGMENTED TAB CONTROL SYSTEM ───
+    function switchWindowTab(windowId, tabId) {
+      const win = document.getElementById(windowId);
+      if (!win) return;
+      
+      // Deactivate all tab buttons inside this window
+      const tabButtons = win.querySelectorAll('.window-tab-btn');
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Hide all panels inside this window
+      const panels = win.querySelectorAll('.tab-panel');
+      panels.forEach(p => p.classList.remove('active'));
+      
+      // Activate target panel and matching button
+      const activePanel = win.querySelector(`#${tabId}`);
+      if (activePanel) activePanel.classList.add('active');
+      
+      // Map active state to corresponding button
+      const targetBtn = Array.from(tabButtons).find(btn => btn.textContent.toLowerCase() === tabId.split('-')[1].toLowerCase());
+      if (targetBtn) targetBtn.classList.add('active');
+    }
+
+    // ─── WINDOW STATE CONTROLLERS ───
+    function openWindow(id) {
+      // VHS Archive intercept: Projects.app triggers the archive experience
+      // instead of opening the legacy Finder-style window.
+      if (id === 'win-projects') {
+        if (window.JingerArchive && window.JingerArchive.state === 'closed') {
+          window.JingerArchive.openArchive();
+        }
+        return;
+      }
+
+      const win = document.getElementById(id);
+      if (!win) return;
+
+      if (win.classList.contains('minimized')) {
+        const dockId = `dock-item-${id}`;
+        genieRestore(id, dockId);
+      } else {
+        win.classList.remove('closed');
+        bringToFront(win);
+      }
+      updateDockDotState(id, true);
+    }
+
+    function closeWindow(id) {
+      const win = document.getElementById(id);
+      if (!win) return;
+      win.style.transform = '';
+      win.style.opacity = '';
+      win.style.transition = '';
+      win.style.transformOrigin = '';
+      win.style.pointerEvents = '';
+      win.classList.remove('minimized', 'maximized');
+      win.classList.add('closed');
+      updateDockDotState(id, false);
+    }
+
+    function isWindowOpen(id) {
+      const win = document.getElementById(id);
+      return win && !win.classList.contains('closed') && !win.classList.contains('minimized');
+    }
+
+    // Minimize window using famous Genie Effect (warp & zoom into Dock)
+    function minimizeWindow(id) {
+      const dockId = `dock-item-${id}`;
+      genieMinimize(id, dockId);
+    }
+
+    // Genie effect: Minimize down to the Dock item icon coordinate
+    function genieMinimize(windowId, dockItemId) {
+      const win = document.getElementById(windowId);
+      const dockItem = document.getElementById(dockItemId);
+      if (!win || !dockItem) return;
+
+      const winRect = win.getBoundingClientRect();
+      const dockRect = dockItem.getBoundingClientRect();
+
+      const winCenterX = winRect.left + winRect.width / 2;
+      const winCenterY = winRect.top + winRect.height / 2;
+      const dockCenterX = dockRect.left + dockRect.width / 2;
+      const dockCenterY = dockRect.top + dockRect.height / 2;
+
+      const tx = dockCenterX - winCenterX;
+      const ty = dockCenterY - winCenterY;
+
+      win.style.transformOrigin = "center bottom";
+      win.style.transition = "transform 0.38s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.38s ease";
+      // Scale and skew to realistically simulate the famous macOS warp curve
+      win.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale3d(0.04, 0.08, 1) skewX(-15deg)`;
+      win.style.opacity = "0";
+
+      setTimeout(() => {
+        win.classList.add('minimized');
+        win.style.pointerEvents = "none";
+      }, 380);
+    }
+
+    // Genie effect: Expand up back from the Dock item icon coordinate
+    function genieRestore(windowId, dockItemId) {
+      const win = document.getElementById(windowId);
+      const dockItem = document.getElementById(dockItemId);
+      if (!win) return;
+
+      win.classList.remove('minimized');
+      win.style.pointerEvents = "auto";
+      win.style.transition = "none";
+
+      const winRect = win.getBoundingClientRect();
+      const dockRect = dockItem ? dockItem.getBoundingClientRect() : {left: 0, top: 0, width: 0, height: 0};
+
+      const winCenterX = winRect.left + winRect.width / 2;
+      const winCenterY = winRect.top + winRect.height / 2;
+      const dockCenterX = dockRect.left + dockRect.width / 2;
+      const dockCenterY = dockRect.top + dockRect.height / 2;
+
+      const tx = dockCenterX - winCenterX;
+      const ty = dockCenterY - winCenterY;
+
+      // Position instantly at minimized coordinates
+      win.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale3d(0.04, 0.08, 1) skewX(-15deg)`;
+      win.style.opacity = "0";
+
+      // Force context layout calculation reflow
+      win.offsetHeight;
+
+      win.style.transformOrigin = "center bottom";
+      win.style.transition = "transform 0.38s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.38s ease";
+      win.style.transform = "translate3d(0, 0, 0) scale3d(1, 1, 1) skewX(0)";
+      win.style.opacity = "1";
+
+      setTimeout(() => {
+        win.style.transform = '';
+        win.style.opacity = '';
+        win.style.transition = '';
+        win.style.transformOrigin = '';
+      }, 400);
+
+      bringToFront(win);
+    }
+
+    function toggleMaximize(id) {
+      const win = document.getElementById(id);
+      if (!win) return;
+      win.style.transform = '';
+      win.style.opacity = '';
+      win.style.transition = '';
+      win.style.transformOrigin = '';
+      win.style.pointerEvents = '';
+      win.classList.toggle('maximized');
+    }
+
+    function bringToFront(win) {
+      globalZIndex++;
+      win.style.zIndex = globalZIndex;
+    }
+
+    function updateDockDotState(id, active) {
+      const dotEl = document.getElementById(`dot-${id}`);
+      if (dotEl) {
+        if (active) dotEl.classList.add('active');
+        else dotEl.classList.remove('active');
+      }
+    }
+
+    // ─── FLUID DOCK MAGNIFICATION SYSTEM ───
+    function initDockMagnifier() {
+      const dock = document.querySelector('.dock-container');
+      const items = Array.from(document.querySelectorAll('.dock-item'));
+      const maxScale = 1.5;
+      const baseScale = 1;
+      const range = 200;
+
+      function applyMagnification(mouseX) {
+        items.forEach(function(item) {
+          var rect = item.getBoundingClientRect();
+          var centerX = rect.left + rect.width / 2;
+          var dist = Math.abs(mouseX - centerX);
+          var scale, ty;
+          if (dist > range) {
+            scale = baseScale;
+            ty = 0;
+          } else {
+            var ratio = 1 - dist / range;
+            scale = baseScale + (maxScale - baseScale) * ratio * ratio;
+            ty = -(scale - baseScale) * 20;
+          }
+          item.style.transform = 'scale(' + scale + ') translateY(' + ty + 'px)';
+        });
+      }
+
+      dock.addEventListener('mousemove', function(e) {
+        applyMagnification(e.clientX);
+      });
+
+      dock.addEventListener('mouseleave', function() {
+        items.forEach(function(item) {
+          item.style.transform = '';
+        });
+      });
+    }
+
+    // Smooth App Bounce Activation
+    function triggerAppActivation(winId, dockItemId) {
+      const dockItem = document.getElementById(dockItemId);
+      if (!dockItem) return;
+
+      // Trigger standard bounce cycle
+      dockItem.classList.add('bouncing');
+      setTimeout(() => {
+        dockItem.classList.remove('bouncing');
+      }, 1200);
+
+      // VHS Archive intercept: dock Projects icon opens archive
+      if (winId === 'win-projects') {
+        if (window.JingerArchive && window.JingerArchive.state === 'closed') {
+          window.JingerArchive.openArchive();
+        }
+        return;
+      }
+
+      openWindow(winId);
+    }
+
+    function openProjectDetail(slug) {
+      const gallery = document.getElementById('projects-gallery');
+      const detail = document.getElementById('project-detail-' + slug);
+      if (!gallery || !detail) return;
+
+      gallery.classList.add('hidden');
+      document.querySelectorAll('.project-detail-view').forEach(v => v.classList.remove('active'));
+      detail.classList.add('active');
+
+      document.getElementById('proj-back-btn').disabled = false;
+      const nameEl = detail.querySelector('.project-detail-title');
+      document.getElementById('proj-nav-title').textContent = nameEl ? nameEl.textContent : 'Project';
+    }
+
+    function projectGoBack() {
+      const gallery = document.getElementById('projects-gallery');
+      gallery.classList.remove('hidden');
+      document.querySelectorAll('.project-detail-view').forEach(v => v.classList.remove('active'));
+      document.getElementById('proj-back-btn').disabled = true;
+      document.getElementById('proj-nav-title').textContent = 'All Projects';
+    }
+
+    function initProjectParticles() {
+      document.querySelectorAll('.project-gallery-item').forEach(item => {
+        const cover = item.querySelector('.project-gallery-cover');
+        const canvas = cover.querySelector('canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = -1, mouseY = -1;
+        let animId = null;
+
+        function resize() {
+          canvas.width = cover.offsetWidth;
+          canvas.height = cover.offsetHeight;
+        }
+
+        function createParticles() {
+          particles = [];
+          for (let i = 0; i < 40; i++) {
+            particles.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              vx: (Math.random() - 0.5) * 0.5,
+              vy: (Math.random() - 0.5) * 0.5,
+              r: Math.random() * 2.5 + 1
+            });
+          }
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => {
+            if (mouseX >= 0) {
+              const dx = p.x - mouseX, dy = p.y - mouseY;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 80) {
+                const force = (80 - dist) / 80 * 0.8;
+                p.vx += (dx / dist) * force;
+                p.vy += (dy / dist) * force;
+              }
+            }
+            p.vx *= 0.96; p.vy *= 0.96;
+            p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fill();
+          });
+
+          particles.forEach((a, i) => {
+            particles.slice(i + 1).forEach(b => {
+              const d = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+              if (d < 60) {
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = `rgba(255,255,255,${0.3 * (1 - d / 60)})`;
+                ctx.stroke();
+              }
+            });
+          });
+          animId = requestAnimationFrame(draw);
+        }
+
+        item.addEventListener('mouseenter', () => {
+          resize(); createParticles(); draw();
+        });
+        item.addEventListener('mousemove', (e) => {
+          const r = cover.getBoundingClientRect();
+          mouseX = e.clientX - r.left; mouseY = e.clientY - r.top;
+        });
+        item.addEventListener('mouseleave', () => {
+          mouseX = -1; mouseY = -1;
+          if (animId) cancelAnimationFrame(animId);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+      });
+    }
+
+    // ─── WINDOW DRAG LOGIC (Limits viewport) ───
+    function makeDraggable(win) {
+      const titlebar = win.querySelector('.window-header');
+      if (!titlebar) return;
+
+      let initX = 0, initY = 0, destX = 0, destY = 0;
+      titlebar.onmousedown = startDrag;
+
+      function startDrag(e) {
+        if (window.innerWidth <= 768) return;
+        if (e.target.classList.contains('control-btn')) return;
+
+        e.preventDefault();
+        bringToFront(win);
+
+        destX = e.clientX;
+        destY = e.clientY;
+
+        document.onmouseup = stopDrag;
+        document.onmousemove = performDrag;
+      }
+
+      function performDrag(e) {
+        e.preventDefault();
+        initX = destX - e.clientX;
+        initY = destY - e.clientY;
+        destX = e.clientX;
+        destY = e.clientY;
+
+        let resolvedTop = win.offsetTop - initY;
+        let resolvedLeft = win.offsetLeft - initX;
+
+        const viewWidth = document.getElementById('desktop-area').offsetWidth;
+        const viewHeight = document.getElementById('desktop-area').offsetHeight;
+
+        if (resolvedTop < 0) resolvedTop = 0;
+        if (resolvedLeft < 0) resolvedLeft = 0;
+        if (resolvedTop > viewHeight - 40) resolvedTop = viewHeight - 40;
+        if (resolvedLeft > viewWidth - 120) resolvedLeft = viewWidth - 120;
+
+        win.style.top = `${resolvedTop}px`;
+        win.style.left = `${resolvedLeft}px`;
+      }
+
+      function stopDrag() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+      }
+    }
+
+    function initWindowResize() {
+      var dirs = ['e','w','s','n','se','sw','ne','nw'];
+      document.querySelectorAll('.window').forEach(function(win) {
+        dirs.forEach(function(dir) {
+          var handle = document.createElement('div');
+          handle.className = 'win-resize win-resize-' + dir;
+          win.appendChild(handle);
+
+          handle.addEventListener('mousedown', function(e) {
+            if (window.innerWidth <= 768) return;
+            e.preventDefault();
+            e.stopPropagation();
+            bringToFront(win);
+
+            var startX = e.clientX;
+            var startY = e.clientY;
+            var startW = win.offsetWidth;
+            var startH = win.offsetHeight;
+            var startL = win.offsetLeft;
+            var startT = win.offsetTop;
+
+            function onMove(ev) {
+              ev.preventDefault();
+              var dx = ev.clientX - startX;
+              var dy = ev.clientY - startY;
+              var newW = startW, newH = startH, newL = startL, newT = startT;
+
+              if (dir.indexOf('e') !== -1) newW = Math.max(250, startW + dx);
+              if (dir.indexOf('w') !== -1) { newW = Math.max(250, startW - dx); newL = startL + (startW - newW); }
+              if (dir.indexOf('s') !== -1) newH = Math.max(150, startH + dy);
+              if (dir.indexOf('n') !== -1) { newH = Math.max(150, startH - dy); newT = startT + (startH - newH); }
+
+              win.style.width = newW + 'px';
+              win.style.height = newH + 'px';
+              win.style.left = newL + 'px';
+              win.style.top = newT + 'px';
+            }
+
+            function onUp() {
+              document.removeEventListener('mousemove', onMove);
+              document.removeEventListener('mouseup', onUp);
+            }
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+          });
+        });
+      });
+    }
+
+    // ─── ROBUST PIXEL PET DRAG SYSTEM ───
+    function makePetDraggable() {
+      const pet = document.getElementById('jinger-pet');
+      if (!pet) return;
+
+      let startX = 0, startY = 0, initialLeft = 0, initialTop = 0;
+      let isDraggingPet = false;
+
+      pet.addEventListener('mousedown', startPetDrag);
+      pet.addEventListener('touchstart', startPetDrag, {passive: true});
+
+      function startPetDrag(e) {
+        isDraggingPet = true;
+        pet.style.transition = 'none';
+
+        pet.style.top = `${pet.offsetTop}px`;
+        pet.style.bottom = 'auto';
+
+        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+
+        startX = clientX;
+        startY = clientY;
+        initialLeft = pet.offsetLeft;
+        initialTop = pet.offsetTop;
+
+        if (e.type === 'mousedown') {
+          document.addEventListener('mousemove', performPetDrag);
+          document.addEventListener('mouseup', stopPetDrag);
+        } else {
+          document.addEventListener('touchmove', performPetDrag, {passive: false});
+          document.addEventListener('touchend', stopPetDrag);
+        }
+      }
+
+      function performPetDrag(e) {
+        if (!isDraggingPet) return;
+
+        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+
+        let targetLeft = initialLeft + dx;
+        let targetTop = initialTop + dy;
+
+        // Keep inside desktop boundaries
+        const desktop = document.getElementById('desktop-area');
+        if (targetLeft < 0) targetLeft = 0;
+        if (targetLeft > desktop.offsetWidth - 50) targetLeft = desktop.offsetWidth - 50;
+        if (targetTop < 0) targetTop = 0;
+        if (targetTop > desktop.offsetHeight - 50) targetTop = desktop.offsetHeight - 50;
+
+        pet.style.left = `${targetLeft}px`;
+        pet.style.top = `${targetTop}px`;
+        petXPos = targetLeft; // Sync coordinate mapping
+      }
+
+      function stopPetDrag() {
+        isDraggingPet = false;
+        pet.style.transition = '';
+        document.removeEventListener('mousemove', performPetDrag);
+        document.removeEventListener('mouseup', stopPetDrag);
+        document.removeEventListener('touchmove', performPetDrag);
+        document.removeEventListener('touchend', stopPetDrag);
+      }
+    }
+
+    // ─── RETRO GAME CONTROLLER (SNAKE) ───
+    let gameCanvas = document.getElementById('gameCanvas');
+    let ctx = gameCanvas.getContext('2d');
+    let snakeTimer = null;
+    let gridSquare = 20;
+    let snake = [{x: 160, y: 140}, {x: 140, y: 140}];
+    let gameInputDirection = {x: 20, y: 0};
+    let pixelTarget = {x: 80, y: 80};
+    let currentScore = 0;
+
+    function startGame() {
+      if (snakeTimer) clearInterval(snakeTimer);
+      snake = [{x: 160, y: 140}, {x: 140, y: 140}];
+      gameInputDirection = {x: 20, y: 0};
+      currentScore = 0;
+      generatePixelTarget();
+      snakeTimer = setInterval(renderFrame, 130);
+    }
+
+    function stopGame() {
+      if (snakeTimer) {
+        clearInterval(snakeTimer);
+        snakeTimer = null;
+      }
+    }
+
+    function generatePixelTarget() {
+      pixelTarget.x = Math.floor(Math.random() * (gameCanvas.width / gridSquare)) * gridSquare;
+      pixelTarget.y = Math.floor(Math.random() * (gameCanvas.height / gridSquare)) * gridSquare;
+    }
+
+    function renderFrame() {
+      const head = {
+        x: snake[0].x + gameInputDirection.x,
+        y: snake[0].y + gameInputDirection.y
+      };
+
+      if (head.x < 0) head.x = gameCanvas.width - gridSquare;
+      if (head.x >= gameCanvas.width) head.x = 0;
+      if (head.y < 0) head.y = gameCanvas.height - gridSquare;
+      if (head.y >= gameCanvas.height) head.y = 0;
+
+      for (let segment of snake) {
+        if (segment.x === head.x && segment.y === head.y) {
+          stopGame();
+          alert(`Game Over! Score: ${currentScore}`);
+          return;
+        }
+      }
+
+      snake.unshift(head);
+
+      if (head.x === pixelTarget.x && head.y === pixelTarget.y) {
+        currentScore++;
+        generatePixelTarget();
+      } else {
+        snake.pop();
+      }
+
+      ctx.fillStyle = '#1A1A2E';
+      ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+      ctx.fillStyle = '#E8839B';
+      ctx.fillRect(pixelTarget.x, pixelTarget.y, gridSquare - 2, gridSquare - 2);
+
+      ctx.fillStyle = '#5BBA6F';
+      for (let index = 0; index < snake.length; index++) {
+        ctx.fillRect(snake[index].x, snake[index].y, gridSquare - 2, gridSquare - 2);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowUp':
+          if (gameInputDirection.y === 0) gameInputDirection = {x: 0, y: -20};
+          break;
+        case 'ArrowDown':
+          if (gameInputDirection.y === 0) gameInputDirection = {x: 0, y: 20};
+          break;
+        case 'ArrowLeft':
+          if (gameInputDirection.x === 0) gameInputDirection = {x: -20, y: 0};
+          break;
+        case 'ArrowRight':
+          if (gameInputDirection.x === 0) gameInputDirection = {x: 20, y: 0};
+          break;
+      }
+    });
+
+    // ─── SOUND ENGINE: SYNTH PLAYBACK ───
+    let audioContext = null;
+    let trackPlayStatus = false;
+    let ipodTimer = null;
+    let ipodDuration = 0;
+
+    const playlist = [
+      {title: "Retro Chiptune Theme", artist: "Oscillator Synth", baseFreq: 290},
+      {title: "8-Bit Waveform Echoes", artist: "Vintage Generator", baseFreq: 340},
+      {title: "Claude Code Lofi Beat", artist: "Vibe Engine Pro", baseFreq: 220}
+    ];
+    let currentTrackIdx = 0;
+
+    function initIpodAudio() {
+      updateIpodDisplay();
+    }
+
+    function ipodToggle() {
+      trackPlayStatus = !trackPlayStatus;
+      if (trackPlayStatus) {
+        startSynthesizer();
+      } else {
+        stopSynthesizer();
+      }
+    }
+
+    function startSynthesizer() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      playMelodyLoop();
+    }
+
+    function stopSynthesizer() {
+      trackPlayStatus = false;
+      if (ipodTimer) {
+        clearTimeout(ipodTimer);
+        ipodTimer = null;
+      }
+      const fillEl = document.getElementById('ipod-fill');
+      if (fillEl) fillEl.style.width = '0%';
+      document.getElementById('ipod-track-time').textContent = "0:00 / 0:00";
+    }
+
+    function playMelodyLoop() {
+      if (!trackPlayStatus) return;
+
+      const base = playlist[currentTrackIdx].baseFreq;
+      const melodyNotes = [base, base * 1.25, base * 1.5, base * 1.875, base * 2];
+      const randomNote = melodyNotes[Math.floor(Math.random() * melodyNotes.length)];
+
+      playTone(randomNote, 0.25);
+
+      ipodDuration += 0.25;
+      const elapsedMins = Math.floor(ipodDuration / 60);
+      const elapsedSecs = Math.floor(ipodDuration % 60).toString().padStart(2, '0');
+      document.getElementById('ipod-track-time').textContent = `${elapsedMins}:${elapsedSecs} / 3:00`;
+      
+      const completionPercent = (ipodDuration / 180) * 100;
+      document.getElementById('ipod-fill').style.width = `${completionPercent}%`;
+
+      if (ipodDuration >= 180) {
+        ipodDuration = 0;
+        ipodNext();
+        return;
+      }
+
+      ipodTimer = setTimeout(playMelodyLoop, 280);
+    }
+
+    function playTone(freq, duration) {
+      if (!audioContext) return;
+      const osc = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+
+      gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+
+      osc.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      osc.start();
+      osc.stop(audioContext.currentTime + duration);
+    }
+
+    function ipodNext() {
+      currentTrackIdx = (currentTrackIdx + 1) % playlist.length;
+      ipodDuration = 0;
+      updateIpodDisplay();
+      if (trackPlayStatus) {
+        stopSynthesizer();
+        trackPlayStatus = true;
+        startSynthesizer();
+      }
+    }
+
+    function ipodPrev() {
+      currentTrackIdx = (currentTrackIdx - 1 + playlist.length) % playlist.length;
+      ipodDuration = 0;
+      updateIpodDisplay();
+      if (trackPlayStatus) {
+        stopSynthesizer();
+        trackPlayStatus = true;
+        startSynthesizer();
+      }
+    }
+
+    function updateIpodDisplay() {
+      document.getElementById('ipod-track-title').textContent = playlist[currentTrackIdx].title;
+      document.getElementById('ipod-track-artist').textContent = playlist[currentTrackIdx].artist;
+    }
+
+    function ipodMenu() {
+      alert("iPod Menu: Playing synth audio sequences.");
+    }
+
+    // ─── COMPANION PIXEL PET WANDERING MACHINE ───
+    let petXPos = 150;
+
+    function startPetWalkRoutine() {
+      setInterval(() => {
+        // Alternating logic: walk or idle (only if pet is not being manually dragged)
+        const pet = document.getElementById('jinger-pet');
+        const isDragging = pet.style.cursor === 'grabbing';
+        if (!isDragging && Math.random() > 0.3) {
+          wanderPet();
+        }
+      }, 3500);
+    }
+
+    function wanderPet() {
+      const pet = document.getElementById('jinger-pet');
+      if (!pet) return;
+
+      const randomTravel = Math.floor(Math.random() * 80) - 40;
+      petXPos += randomTravel;
+
+      const boundaryLimit = document.getElementById('desktop-area').offsetWidth - 120;
+      if (petXPos < 40) petXPos = 40;
+      if (petXPos > boundaryLimit) petXPos = boundaryLimit;
+
+      pet.classList.add('walking');
+      pet.style.left = `${petXPos}px`;
+
+      const flipScale = randomTravel > 0 ? 1 : -1;
+      pet.querySelector('.pixel-pet').style.transform = `scaleX(${flipScale})`;
+
+      setTimeout(() => pet.classList.remove('walking'), 1200);
+    }
+
+    const dialogueSet = [
+      "Hi! 我是静儿 ☺",
+      "试试在 Terminal 里输入 /help 吧！",
+      "拖动我可以改变我的位置哦~",
+      "iPod 里面有我自制的 Oscillator Synth 乐曲 🎵",
+      "双击 Biography 查看我近期的 AI 探索实践",
+      "此操作系统由 Vibe Coding 提供动力！"
+    ];
+
+    let petBubbleTimer = null;
+    function triggerPetDialogue() {
+      const bubble = document.getElementById('pet-bubble-txt');
+      if (!bubble) return;
+
+      if (petBubbleTimer) clearTimeout(petBubbleTimer);
+
+      const activeText = dialogueSet[Math.floor(Math.random() * dialogueSet.length)];
+      bubble.textContent = activeText;
+      bubble.style.display = 'block';
+
+      petBubbleTimer = setTimeout(() => {
+        bubble.style.display = 'none';
+        petBubbleTimer = null;
+      }, 4000);
+    }
+
+    // ─── TERMINAL COMMAND PARSER ───
+    function initTerminal() {
+      const inputEl = document.getElementById('term-input');
+      const histEl = document.getElementById('term-history');
+
+      inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const rawText = inputEl.value.trim();
+          executeTerminalInstruction(rawText, histEl);
+          inputEl.value = '';
+          
+          const wrapper = histEl.parentElement;
+          wrapper.scrollTop = wrapper.scrollHeight;
+        }
+      });
+    }
+
+    function termScroll(hw) {
+      hw.scrollTop = hw.scrollHeight;
+    }
+
+    function termTypeLine(container, text, color, hw, cb) {
+      var div = document.createElement('div');
+      div.style.color = color;
+      div.style.whiteSpace = 'pre';
+      div.style.fontFamily = 'var(--font-mono)';
+      div.style.fontSize = 'var(--text-command)';
+      container.appendChild(div);
+      var i = 0;
+      function tick() {
+        if (i < text.length) {
+          div.textContent += text.charAt(i);
+          i++;
+          termScroll(hw);
+          setTimeout(tick, 20 + Math.random() * 10);
+        } else {
+          if (cb) cb();
+        }
+      }
+      tick();
+    }
+
+    function termTypeLines(container, lines, hw, cb) {
+      var idx = 0;
+      function next() {
+        if (idx >= lines.length) { if (cb) cb(); return; }
+        var line = lines[idx];
+        idx++;
+        termTypeLine(container, line.text, line.color || 'var(--matrix-green)', hw, function() {
+          setTimeout(next, 60);
+        });
+      }
+      next();
+    }
+
+    function executeTerminalInstruction(commandLine, historyWrapper) {
+      var cmdEcho = document.createElement('div');
+      cmdEcho.innerHTML = '<span style="color:var(--retro-pink)">jingeros:~$</span> ' + commandLine;
+      historyWrapper.appendChild(cmdEcho);
+      termScroll(historyWrapper);
+
+      var normalizedCmd = commandLine.toLowerCase().trim();
+      var answerBlock = document.createElement('div');
+      answerBlock.style.margin = '4px 0 10px 0';
+      historyWrapper.appendChild(answerBlock);
+
+      if (normalizedCmd === 'help' || normalizedCmd === '/help') {
+        terminalTypewriterHelp(answerBlock, historyWrapper);
+      } else if (normalizedCmd === '/about') {
+        openWindow('win-about');
+        termTypeLine(answerBlock, 'Navigating to Biography profile...', 'var(--matrix-green)', historyWrapper);
+      } else if (normalizedCmd === '/projects') {
+        if (window.JingerArchive && window.JingerArchive.state === 'closed') {
+          window.JingerArchive.openArchive();
+          termTypeLine(answerBlock, 'Loading VHS Archive...', 'var(--matrix-green)', historyWrapper);
+        } else {
+          termTypeLine(answerBlock, 'Archive already open.', 'var(--matrix-green)', historyWrapper);
+        }
+      } else if (normalizedCmd === '/contact') {
+        openWindow('win-contact');
+        termTypeLine(answerBlock, 'Navigating to Contact form card...', 'var(--matrix-green)', historyWrapper);
+      } else if (normalizedCmd === '/shutdown') {
+        var windows = document.querySelectorAll('.window');
+        windows.forEach(function(w) { w.classList.add('closed'); });
+        termTypeLine(answerBlock, 'Triggered system-wide safe standby mode.', 'var(--matrix-green)', historyWrapper);
+      } else if (normalizedCmd === 'whoami') {
+        termTypeLines(answerBlock, [
+          { text: 'Jinger Zhou', color: 'var(--retro-pink)' },
+          { text: 'AI PM & Native Builder', color: 'var(--matrix-green)' },
+          { text: 'Leveraging Vibe Coding paradigms.', color: 'var(--matrix-green)' }
+        ], historyWrapper);
+      } else if (normalizedCmd === 'ls') {
+        termTypeLines(answerBlock, [
+          { text: 'Directories in JingerOS:', color: 'var(--matrix-green)' },
+          { text: '  win-about        [Folder]', color: 'var(--pixel-blue)' },
+          { text: '  win-projects     [Folder]', color: 'var(--pixel-blue)' },
+          { text: '  win-experience   [Folder]', color: 'var(--pixel-blue)' },
+          { text: '  win-contact      [App]', color: 'var(--pixel-blue)' },
+          { text: '  win-playground   [Virtual Executable]', color: 'var(--pixel-blue)' },
+          { text: '  win-ipod         [Media Player]', color: 'var(--pixel-blue)' },
+          { text: '  win-terminal     [System]', color: 'var(--pixel-blue)' }
+        ], historyWrapper);
+      } else if (normalizedCmd === 'clear') {
+        historyWrapper.innerHTML = '';
+      } else if (normalizedCmd === '') {
+        return;
+      } else {
+        termTypeLine(answerBlock, 'Command "' + commandLine + '" unrecognized. Enter \'help\' for support.', 'var(--btn-close)', historyWrapper);
+      }
+    }
+
+    // Form Submission placeholder
+    function submitForm(e) {
+      e.preventDefault();
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('contact-status').style.display = 'block';
+    }
+
+    function terminalTypewriterHelp(container, historyWrapper) {
+      var lines = [
+        { text: 'Loading JingerOS modules...', color: 'var(--matrix-green)', isStatus: true },
+        { text: '', isProgress: true },
+        { text: 'Available JingerOS actions:', color: 'var(--matrix-green)' },
+        { text: '  help         - Show commands listing', color: 'var(--pixel-blue)' },
+        { text: '  /about       - Open Biography Profile', color: 'var(--pixel-blue)' },
+        { text: '  /projects    - Open Projects list folder', color: 'var(--pixel-blue)' },
+        { text: '  /contact     - Open Contact Form', color: 'var(--pixel-blue)' },
+        { text: '  /shutdown    - Minimize and close all active tasks', color: 'var(--pixel-blue)' },
+        { text: '  whoami       - Fast candidate facts', color: 'var(--pixel-blue)' },
+        { text: '  ls           - List directory systems', color: 'var(--pixel-blue)' },
+        { text: '  clear        - Wipe the CLI history terminal', color: 'var(--pixel-blue)' },
+        { text: 'System ready. ▌', color: 'var(--matrix-green)', isStatus: true }
+      ];
+
+      var lineIdx = 0;
+
+      function nextLine() {
+        if (lineIdx >= lines.length) return;
+        var line = lines[lineIdx];
+        lineIdx++;
+
+        if (line.isProgress) {
+          var label = document.createElement('div');
+          label.className = 'term-progress-label';
+          label.textContent = '[████░░░░░░] 0%';
+          container.appendChild(label);
+
+          var barWrap = document.createElement('div');
+          barWrap.className = 'term-progress-bar';
+          var fill = document.createElement('div');
+          fill.className = 'term-progress-fill';
+          barWrap.appendChild(fill);
+          container.appendChild(barWrap);
+
+          var pct = 0;
+          var progressInterval = setInterval(function() {
+            pct += Math.floor(Math.random() * 8) + 3;
+            if (pct >= 100) {
+              pct = 100;
+              clearInterval(progressInterval);
+              fill.style.width = '100%';
+              var blocks = 10;
+              label.textContent = '[██████████] 100% ✓';
+              setTimeout(nextLine, 300);
+            } else {
+              fill.style.width = pct + '%';
+              var filled = Math.floor(pct / 10);
+              var empty = 10 - filled;
+              label.textContent = '[' + '█'.repeat(filled) + '░'.repeat(empty) + '] ' + pct + '%';
+            }
+            historyWrapper.scrollTop = historyWrapper.scrollHeight;
+          }, 80);
+          return;
+        }
+
+        var div = document.createElement('div');
+        div.style.color = line.color;
+        div.style.whiteSpace = 'pre';
+        div.style.fontFamily = 'var(--font-mono)';
+        div.style.fontSize = 'var(--text-command)';
+        container.appendChild(div);
+
+        var text = line.text;
+        var charIdx = 0;
+        var speed = line.isStatus ? 30 : 15;
+
+        function typeChar() {
+          if (charIdx < text.length) {
+            div.textContent += text.charAt(charIdx);
+            charIdx++;
+            historyWrapper.scrollTop = historyWrapper.scrollHeight;
+            setTimeout(typeChar, speed + Math.random() * 10);
+          } else {
+            setTimeout(nextLine, line.isStatus ? 200 : 60);
+          }
+        }
+        typeChar();
+      }
+
+      nextLine();
+    }
+
+    function copyText(value) {
+      navigator.clipboard.writeText(value).then(() => {
+        alert("Copy succeeded!");
+      });
+    }
+
+    function iphoneCall() {
+      document.getElementById('iphone-alert-overlay').classList.add('active');
+    }
+
+    function iphoneCloseAlert() {
+      document.getElementById('iphone-alert-overlay').classList.remove('active');
+    }
+
+    function iphoneCopyEmail() {
+      function showToast() {
+        const toast = document.getElementById('iphone-copy-toast');
+        toast.classList.add('active');
+        setTimeout(function() { toast.classList.remove('active'); }, 2000);
+      }
+      try {
+        navigator.clipboard.writeText('z17326084778@163.com').then(showToast).catch(showToast);
+      } catch(e) {
+        showToast();
+      }
+    }
+
+    function iphoneOpenSMS() {
+      document.getElementById('iphone-sms-screen').classList.add('active');
+    }
+
+    function iphoneCloseSMS() {
+      document.getElementById('iphone-sms-screen').classList.remove('active');
+    }
+
+    function iphoneGoHome() {
+      document.getElementById('iphone-sms-screen').classList.remove('active');
+    }
+
+    function iphoneSendSMS(e) {
+      e.preventDefault();
+      const form = document.getElementById('iphone-sms-form');
+      const btn = document.getElementById('iphone-sms-btn');
+      const status = document.getElementById('iphone-sms-status');
+      btn.disabled = true;
+      btn.textContent = '发送中...';
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form)))
+      }).then(function(res) { return res.json(); }).then(function(data) {
+        if (data.success) {
+          status.className = 'iphone-sms-status success';
+          status.textContent = '✓ 发送成功！';
+          status.style.display = 'block';
+          form.reset();
+        } else {
+          status.className = 'iphone-sms-status error';
+          status.textContent = '发送失败，请稍后再试';
+          status.style.display = 'block';
+        }
+      }).catch(function() {
+        status.className = 'iphone-sms-status error';
+        status.textContent = '网络错误，请稍后再试';
+        status.style.display = 'block';
+      }).finally(function() {
+        btn.disabled = false;
+        btn.textContent = '发送';
+        setTimeout(function() { status.style.display = 'none'; }, 3000);
+      });
+    }
+  </script>
+
+  <!-- ═══ VHS ARCHIVE — Sub-modules (loaded in dependency order) ═══ -->
+  <script src="archive/audio-manager.js"></script>
+  <script src="archive/particles.js"></script>
+  <script src="archive/crt-effects.js"></script>
+  <script src="archive/tape-physics.js"></script>
+  <script src="archive/glitch-transition.js"></script>
+
+  <!-- ═══ Remoire project content (sets REMOIRE_PAGE_HTML_GLOBAL) ═══ -->
+  <script src="projects/remoire/remoire-content.js"></script>
+
+  <!-- ═══ CareerForge project content (sets CAREERFORGE_PAGE_HTML_GLOBAL) ═══ -->
+  <script src="projects/careerforge/cf-content.js"></script>
+
+  <!-- ═══ VHS ARCHIVE — Main controller (loads last, depends on above) ═══ -->
+  <script src="archive/archive.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Claude Code / IDE
+.claude/
+.vscode/
+.idea/
+
+# Local reference materials (not part of the deployed site)
+gsap-public/
+3D模型/
+字体/DottedSongti/
+周静儿-简历Resume.pdf
+项目展示流程demo图.png
+项目展示_截图/
+
+# Temp / build artifacts
+dist/
+*.log
+*.tmp
+*.swp
+*~
+
+# OS thumbnails
+Thumbs.db
+
+# Node (if added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env

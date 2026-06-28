@@ -1,0 +1,554 @@
+/*  ═══════════════════════════════════════════════════════════════════
+    JingerOS Design Tokens
+    千禧复古 × 像素 × 终端 × 早期 Apple UI
+    ───────────────────────────────────────────────────────────────────
+    用法: 每次让 AI 写新组件/页面时，把这个文件一起贴给它。
+    所有颜色、字体、间距必须引用这里的变量，不能硬编码。
+    ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ─── 1. GOOGLE FONTS IMPORT ─────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+
+/*
+   字体选型说明 (AI Slop 审核后调整):
+
+   1. Press Start 2P — 像素大标题。保留,它就是最好的。
+      只用于 Hero / H1 / 大装饰文字。绝不用于正文。
+
+   2. Silkscreen — 新增的第二像素字体。比 Press Start 2P 更轻,
+      用于像素小标签、badge、积分数字、UI 小元素。
+      两个像素字体做出层次差异,避免"一个像素字体打天下"。
+
+   3. Space Grotesk — 升级为主正文字体 (从原设计的"装饰字体"提升)。
+      几何无衬线,字形有个性 (看它的 a 和 g),和终端风格天然搭配。
+      比 Inter 更有辨识度。Inter 作为 fallback 保留。
+      ❌ 原设计用 Inter 做正文 → 太 generic,AI 生成网站标配。
+      ✅ Space Grotesk 做正文 → 更有意见,更匹配千禧复古调性。
+
+   4. JetBrains Mono — 终端/代码/命令。保留,完美选择。
+
+   5. Noto Sans SC — 中文字体。保留,最可靠的中文 sans-serif。
+
+   6. ❌ 删掉了 VT323 (原 fallback) — 和 Press Start 2P 风格重叠,
+      用 Silkscreen 替代,层次更清晰。
+*/
+
+
+/* ─── 2. COLOR TOKENS ────────────────────────────────────────────── */
+
+:root {
+
+  /* ── 2.1 Core Palette: "CRT 调色盘" ── */
+
+  --terminal-gray:  #1A1A2E;   /* 深夜屏幕底色 */
+  --pixel-blue:     #4A9EE5;   /* 主交互色 */
+  --retro-pink:     #E8839B;   /* 强调色 */
+  --matrix-green:   #5BBA6F;   /* 终端光标/成功 */
+  --crt-cream:      #F0EDE5;   /* 卡片底色 */
+  --warm-gray:      #B8B5AD;   /* 次要文字/边框 */
+  --screen-glow:    #E8E4DC;   /* 页面主背景 */
+  --accent-yellow:  #EAC028;   /* 星标/积分/警告 */
+
+
+  /* ── 2.2 Semantic Roles ── */
+
+  /* 背景 */
+  --bg-primary:     var(--screen-glow);
+  --bg-card:        var(--crt-cream);
+  --bg-dark:        var(--terminal-gray);
+  --bg-elevated:    #FFFFFF;     /* 弹窗/浮层/窗口内容区 */
+
+  /* 文字 */
+  --text-primary:   #1A1A2E;
+  --text-secondary: #6B6860;
+  --text-muted:     #9E9A93;     /* 比原设计 #B8B5AD 稍深,确保对比度 ≥ 4.5:1 */
+  --text-inverse:   #F0EDE5;     /* 深色背景上的浅色文字 */
+  --text-link:      var(--pixel-blue);
+
+  /* 交互 */
+  --accent-primary:   var(--pixel-blue);
+  --accent-secondary: var(--retro-pink);
+  --accent-success:   var(--matrix-green);
+  --accent-warning:   var(--accent-yellow);
+
+  /* 边框 & 阴影 */
+  --border-default:  #D4D0C8;    /* Windows 2000 风格 */
+  --border-light:    #E8E4DC;
+  --border-dark:     #808080;
+  --border-inset-hi: #DFDFDF;    /* 拟物凸起高光 */
+  --border-inset-lo: #404040;    /* 拟物凸起暗部 */
+  --shadow-sm:       0 1px 3px rgba(26,26,46,0.06);
+  --shadow-md:       0 4px 12px rgba(26,26,46,0.08);
+  --shadow-lg:       0 8px 24px rgba(26,26,46,0.12);
+  --shadow-window:   2px 2px 8px rgba(26,26,46,0.10);
+
+  /* ASCII Art 专用 */
+  --ascii-dim:       #C8C4BC;
+  --ascii-mid:       #8A8680;
+  --ascii-bright:    var(--pixel-blue);
+  --ascii-accent:    var(--retro-pink);
+
+  /* 窗口标题栏按钮 (macOS Classic) */
+  --btn-close:       #FF5F57;
+  --btn-minimize:    #FFBD2E;
+  --btn-maximize:    #28CA41;
+
+
+  /* ── 2.3 Dark Theme ── */
+  /* V1 先不实现深色主题,但变量预留好,V2 加的时候只需要 swap 值 */
+  /*
+  [data-theme="dark"] {
+    --bg-primary:     #0F0F1A;
+    --bg-card:        #1A1A2E;
+    --bg-dark:        #0A0A14;
+    --bg-elevated:    #252540;
+    --text-primary:   #E8E4DC;
+    --text-secondary: #9E9A93;
+    --text-muted:     #6B6860;
+    --border-default: #3A3A50;
+    --shadow-sm:      0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md:      0 4px 12px rgba(0,0,0,0.4);
+  }
+  */
+
+
+  /* ─── 3. TYPOGRAPHY TOKENS ─────────────────────────────────────── */
+
+  /* 字体族 */
+  --font-pixel:     'Press Start 2P', monospace;
+  --font-pixel-ui:  'Silkscreen', monospace;          /* 新增: 像素UI小字体 */
+  --font-body:      'Space Grotesk', 'Inter', 'Noto Sans SC', sans-serif;
+  --font-mono:      'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-zh:        'Noto Sans SC', sans-serif;       /* 中文 fallback */
+
+  /* 字号 */
+  --text-hero:      clamp(28px, 4vw, 48px);   /* Hero 大标题 (像素字体) */
+  --text-h1:        clamp(20px, 3vw, 32px);   /* 页面标题 (像素字体) */
+  --text-h2:        clamp(18px, 2.5vw, 24px); /* 区块标题 */
+  --text-h3:        clamp(16px, 2vw, 18px);   /* 卡片标题 */
+  --text-body:      15px;                      /* 正文 */
+  --text-sm:        13px;                      /* 小字 */
+  --text-xs:        11px;                      /* 像素标签/元数据 */
+  --text-command:   14px;                      /* 终端命令 */
+
+  /* 字重 */
+  --weight-normal:  400;
+  --weight-medium:  500;
+  --weight-semi:    600;
+  --weight-bold:    700;
+
+  /* 行高 */
+  --leading-tight:  1.3;    /* 标题 */
+  --leading-normal: 1.65;   /* 正文 */
+  --leading-loose:  1.8;    /* 长段落/中文正文 */
+
+  /* 字间距 */
+  --tracking-tight:  -0.02em;  /* 大标题 */
+  --tracking-normal:  0;
+  --tracking-wide:    0.03em;  /* 小标签 */
+  --tracking-caps:    0.08em;  /* 全大写文字 */
+  --tracking-pixel:   0.05em;  /* 像素字体需要稍宽字距 */
+
+
+  /* ─── 4. SPACING & LAYOUT ──────────────────────────────────────── */
+
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+
+  /* 区块间距 */
+  --section-gap:    var(--space-9);    /* 大区块间距 */
+  --card-gap:       var(--space-5);    /* 卡片间距 */
+  --content-gap:    var(--space-4);    /* 内容元素间距 */
+
+  /* 布局 */
+  --max-width:       1200px;
+  --content-width:   800px;    /* 文字内容最大宽度 */
+  --sidebar-width:   280px;
+  --nav-height:      48px;
+  --dock-height:     56px;
+
+  /* 边距 */
+  --page-padding:    clamp(16px, 4vw, 48px);
+
+  /* 圆角 — 千禧复古偏方正,不要大圆角 */
+  --radius-none:  0;
+  --radius-sm:    2px;      /* 像素标签、小按钮 */
+  --radius-md:    4px;      /* 卡片、窗口 */
+  --radius-lg:    6px;      /* 输入框 */
+  --radius-pill:  999px;    /* 药丸标签 (只用于特定标签) */
+
+
+  /* ─── 5. TRANSITIONS ───────────────────────────────────────────── */
+
+  --ease-default:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce:    cubic-bezier(0.34, 1.56, 0.64, 1);   /* 窗口弹出 */
+  --ease-spring:    cubic-bezier(0.22, 1, 0.36, 1);       /* 菜单展开 */
+
+  --duration-fast:   120ms;
+  --duration-base:   200ms;
+  --duration-slow:   400ms;
+  --duration-enter:  500ms;   /* 窗口/面板进入 */
+
+
+  /* ─── 6. Z-INDEX SCALE ─────────────────────────────────────────── */
+
+  --z-bg:         -1;     /* ASCII背景 / 装饰层 */
+  --z-base:        0;
+  --z-card:        10;    /* 卡片 / 内容 */
+  --z-window:      100;   /* JingerOS 窗口 */
+  --z-window-top:  200;   /* 当前激活窗口 */
+  --z-dock:        300;   /* Dock 栏 */
+  --z-nav:         400;   /* 导航栏 */
+  --z-overlay:     500;   /* 遮罩层 */
+  --z-modal:       600;   /* 模态弹窗 */
+  --z-toast:       700;   /* 通知/Toast */
+  --z-scanline:    9999;  /* CRT 扫描线 (最顶层) */
+}
+
+
+/* ─── 7. BASE RESETS & GLOBALS ───────────────────────────────────── */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+/* 中文段落自动切换行高 */
+:lang(zh) p,
+:lang(zh) li {
+  line-height: var(--leading-loose);
+}
+
+
+/* ─── 8. TYPOGRAPHY CLASSES ──────────────────────────────────────── */
+
+/* 像素标题 */
+.text-pixel-hero {
+  font-family: var(--font-pixel);
+  font-size: var(--text-hero);
+  letter-spacing: var(--tracking-pixel);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+}
+
+.text-pixel-h1 {
+  font-family: var(--font-pixel);
+  font-size: var(--text-h1);
+  letter-spacing: var(--tracking-pixel);
+  line-height: var(--leading-tight);
+}
+
+/* 像素UI文字 (小标签、badge、积分) */
+.text-pixel-ui {
+  font-family: var(--font-pixel-ui);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  line-height: 1.4;
+}
+
+/* 区块标题 */
+.text-h2 {
+  font-family: var(--font-body);
+  font-size: var(--text-h2);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}
+
+/* 卡片/项目标题 */
+.text-h3 {
+  font-family: var(--font-body);
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semi);
+  line-height: var(--leading-tight);
+}
+
+/* 终端命令文字 */
+.text-command {
+  font-family: var(--font-mono);
+  font-size: var(--text-command);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  line-height: 1.5;
+}
+
+/* 小标签/元数据 */
+.text-caption {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+
+/* ─── 9. CRT EFFECTS (CSS ONLY) ─────────────────────────────────── */
+
+/* 扫描线覆盖层 — 放在最外层容器的 ::after */
+.crt-scanlines::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.015) 0px,
+    rgba(0, 0, 0, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: var(--z-scanline);
+}
+
+/* CRT 开机动画 */
+@keyframes crt-boot {
+  0%   { clip-path: inset(50% 0); filter: brightness(3); }
+  30%  { clip-path: inset(30% 0); filter: brightness(2); }
+  60%  { clip-path: inset(10% 0); filter: brightness(1.3); }
+  100% { clip-path: inset(0% 0);  filter: brightness(1); }
+}
+
+/* CRT 屏幕微弱闪烁 (很克制,不刺眼) */
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.985; }
+}
+
+
+/* ─── 10. COMPONENT PRIMITIVES ───────────────────────────────────── */
+
+/* macOS Classic 窗口 */
+.window {
+  border: 2px solid var(--border-default);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+}
+
+.window-titlebar {
+  background: linear-gradient(180deg, #E8E4DC 0%, #D4D0C8 100%);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  cursor: default;
+  user-select: none;
+}
+
+.window-titlebar-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+.window-titlebar-btn--close    { background: var(--btn-close); }
+.window-titlebar-btn--minimize { background: var(--btn-minimize); }
+.window-titlebar-btn--maximize { background: var(--btn-maximize); }
+
+.window-content {
+  padding: var(--space-5);
+}
+
+/* Windows 2000 凸起按钮 */
+.btn-retro {
+  background: #D4D0C8;
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow:
+    inset -1px -1px 0 var(--border-dark),
+    inset 1px 1px 0 var(--border-inset-hi),
+    inset -2px -2px 0 var(--border-inset-lo),
+    inset 2px 2px 0 #DFDFDF;
+}
+
+.btn-retro:active {
+  box-shadow:
+    inset 1px 1px 0 var(--border-dark),
+    inset -1px -1px 0 var(--border-inset-hi),
+    inset 2px 2px 0 var(--border-inset-lo),
+    inset -2px -2px 0 #DFDFDF;
+}
+
+/* 终端风格按钮 */
+.btn-terminal {
+  background: var(--bg-dark);
+  color: var(--accent-success);
+  border: 2px solid var(--accent-success);
+  font-family: var(--font-mono);
+  font-size: var(--text-command);
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all var(--duration-base) var(--ease-default);
+}
+
+.btn-terminal:hover {
+  background: var(--accent-success);
+  color: var(--bg-dark);
+}
+
+.btn-terminal:active {
+  transform: translateY(1px);
+}
+
+/* 像素标签 */
+.tag-pixel {
+  font-family: var(--font-pixel-ui);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-3);
+  background: var(--accent-primary);
+  color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* 终端光标闪烁 */
+.cursor-blink {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background: var(--accent-success);
+  animation: blink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* 终端打字效果 */
+.typing-text {
+  font-family: var(--font-mono);
+  overflow: hidden;
+  border-right: 2px solid var(--accent-success);
+  white-space: nowrap;
+  animation:
+    typing 2s steps(30) forwards,
+    blink 0.8s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+
+/* ─── 11. ACCESSIBILITY ──────────────────────────────────────────── */
+
+/* Focus 样式 — 绿色虚线框 (终端风格) */
+:focus-visible {
+  outline: 2px dashed var(--accent-success);
+  outline-offset: 3px;
+}
+
+/* 最小触摸目标 */
+button, a, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .crt-scanlines::after {
+    display: none;
+  }
+}
+
+
+/* ─── 12. RESPONSIVE BREAKPOINTS ─────────────────────────────────── */
+
+/*
+  移动端优先。断点:
+  --bp-sm:   640px   (大手机/小平板)
+  --bp-md:   768px   (平板竖屏)
+  --bp-lg:   1024px  (平板横屏/小桌面)
+  --bp-xl:   1280px  (标准桌面)
+
+  用法:
+  @media (min-width: 768px) { ... }
+*/
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   AI SLOP 审核备注 (给 AI 生成代码时的 red lines):
+   ───────────────────────────────────────────────────────────────────
+
+   ❌ 禁止: 鼠标跟随 radial-gradient 光晕效果
+      (2024-2025 最典型的 AI 生成网站标配, 一眼假)
+
+   ❌ 禁止: 紫色/蓝色渐变背景
+      (用 --bg-primary #E8E4DC 纯色, 不渐变)
+
+   ❌ 禁止: 大圆角卡片 (border-radius: 16px+)
+      (千禧复古偏方正, 最大 6px)
+
+   ❌ 禁止: 渐变色按钮
+      (用纯色 + inset shadow 做拟物凸起效果)
+
+   ❌ 禁止: framer-motion 式的弹跳/spring 过渡作为默认动画
+      (动画要克制, 大部分用 ease-default 200ms)
+
+   ❌ 禁止: "Trusted by X companies" / "Join 10,000+ users" 式文案
+      (这是个人作品集, 不是 SaaS landing page)
+
+   ❌ 禁止: grid auto-fill 瀑布流卡片布局作为默认
+      (用 JingerOS 窗口系统, 不用 generic grid)
+
+   ❌ 禁止: 正文中使用 Inter 作为唯一字体
+      (用 Space Grotesk, Inter 只作 fallback)
+
+   ✅ 要求: 所有颜色通过 var(--xxx) 引用
+   ✅ 要求: 所有字体通过 var(--font-xxx) 引用
+   ✅ 要求: 保持 CRT 扫描线效果 (低调, 不刺眼)
+   ✅ 要求: 窗口组件使用 .window / .window-titlebar 类
+   ✅ 要求: 按钮只用 .btn-retro 或 .btn-terminal
+   ✅ 要求: 响应式用 mobile-first + min-width 媒体查询
+
+   ═══════════════════════════════════════════════════════════════════ */
