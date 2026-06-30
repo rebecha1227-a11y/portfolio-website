@@ -810,6 +810,9 @@
       if (projectId === 'careerforge') {
         setTimeout(() => this._initCareerForgeAnimations(), 500);
       }
+      if (projectId === 'generator') {
+        setTimeout(() => this._initGeneratorAnimations(), 500);
+      }
     }
 
     /* ─── REMOIRE PAGE ANIMATIONS ───────────────────────────────────── */
@@ -1573,6 +1576,136 @@
       }, 20);
     }
 
+    /* ─── GENERATOR PAGE ANIMATIONS ───────────────────────────────────── */
+    _initGeneratorAnimations() {
+      const page = document.querySelector('.gen-page');
+      if (!page) return;
+
+      const subnav = document.querySelector('#project-subnav');
+      if (subnav) {
+        subnav.innerHTML = `
+          <a class="active" data-section="about">About</a>
+          <a data-section="features">How It Works</a>
+          <a data-section="tech">Layouts</a>
+          <a data-section="gallery">AI Power</a>
+          <a data-section="github">Tech & Try</a>
+        `;
+        subnav.querySelectorAll('a[data-section]').forEach(a => {
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const sectionId = a.getAttribute('data-section');
+            subnav.querySelectorAll('a').forEach(x => x.classList.remove('active'));
+            a.classList.add('active');
+            const target = page.querySelector(`#section-${sectionId}`);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        });
+      }
+
+      const bc = page.closest('.browser-content');
+      if (bc && subnav) {
+        const sectionIds = ['about', 'features', 'tech', 'gallery', 'github'];
+        bc.addEventListener('scroll', () => {
+          const scrollPos = bc.scrollTop + 120;
+          let currentSection = 'about';
+          sectionIds.forEach(id => {
+            const section = page.querySelector(`#section-${id}`);
+            if (section && section.offsetTop <= scrollPos) {
+              currentSection = id;
+            }
+          });
+          subnav.querySelectorAll('a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('data-section') === currentSection);
+          });
+        });
+      }
+
+      const logoLines = page.querySelectorAll('.gen-logo-text');
+      if (logoLines.length) {
+        gsap.fromTo(logoLines,
+          { opacity: 0, x: -30 },
+          { opacity: 1, x: 0, duration: 0.8, stagger: 0.15, ease: 'power2.out' }
+        );
+      }
+
+      const heroSub = page.querySelectorAll('.gen-hero-sub');
+      if (heroSub.length) {
+        gsap.fromTo(heroSub,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, delay: 0.4, ease: 'power2.out' }
+        );
+      }
+
+      const heroActions = page.querySelector('.gen-hero-actions');
+      if (heroActions) {
+        gsap.fromTo(heroActions,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.5, delay: 0.7, ease: 'power2.out' }
+        );
+      }
+
+      const heroStats = page.querySelector('.gen-hero-stats');
+      if (heroStats) {
+        gsap.fromTo(heroStats,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, delay: 0.9, ease: 'power2.out' }
+        );
+      }
+
+      const stackCards = page.querySelectorAll('.gen-stack-card');
+      if (stackCards.length) {
+        gsap.fromTo(stackCards,
+          { opacity: 0, x: 60 },
+          { opacity: 1, x: 0, duration: 0.8, stagger: 0.12, delay: 0.3, ease: 'power2.out' }
+        );
+      }
+
+      if (bc) {
+        const sectionLabels = page.querySelectorAll('.gen-section-label');
+        sectionLabels.forEach(label => {
+          gsap.set(label, { opacity: 0, y: 40 });
+        });
+
+        const steps = page.querySelectorAll('.gen-step, .gen-layout-item, .gen-feature, .gen-tech-highlight');
+        steps.forEach(step => {
+          gsap.set(step, { opacity: 0, y: 30 });
+        });
+
+        const pills = page.querySelectorAll('.gen-pill');
+        pills.forEach(pill => {
+          gsap.set(pill, { opacity: 0, scale: 0.8 });
+        });
+
+        const ctaTitle = page.querySelector('.gen-cta-title');
+        if (ctaTitle) gsap.set(ctaTitle, { opacity: 0, y: 30 });
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              if (el.classList.contains('gen-section-label')) {
+                gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
+              } else if (el.classList.contains('gen-cta-title')) {
+                gsap.to(el, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+              } else if (el.classList.contains('gen-pill')) {
+                gsap.to(el, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)' });
+              } else {
+                gsap.to(el, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+              }
+              observer.unobserve(el);
+            }
+          });
+        }, { root: bc, threshold: 0.15 });
+
+        sectionLabels.forEach(l => observer.observe(l));
+        steps.forEach(s => observer.observe(s));
+        pills.forEach(p => observer.observe(p));
+        if (ctaTitle) observer.observe(ctaTitle);
+      }
+    }
+
     /* ─── RETURN TO ARCHIVE ─────────────────────────────────────────── */
     _returnToArchive() {
       if (this.state !== STATES.BROWSING) return;
@@ -1745,7 +1878,7 @@
     _buildAllProjectPages() {
       return PLAYABLE_TAPES.map(t => {
         const page = this._buildProjectPage(t.id);
-        const themeClass = t.id === 'remoire' ? 'remoire-theme' : t.id === 'careerforge' ? 'careerforge-theme' : '';
+        const themeClass = t.id === 'remoire' ? 'remoire-theme' : t.id === 'careerforge' ? 'careerforge-theme' : t.id === 'generator' ? 'generator-theme' : '';
         return `<div class="project-page ${themeClass}" id="project-page-${t.id}" data-theme="${themeClass}" data-project="${t.id}">${page}</div>`;
       }).join('');
     }
@@ -1753,6 +1886,7 @@
     _buildProjectPage(projectId) {
       if (projectId === 'remoire') return REMOIRE_PAGE_HTML;
       if (projectId === 'careerforge') return CAREERFORGE_PAGE_HTML;
+      if (projectId === 'generator') return GENERATOR_PAGE_HTML;
       return buildPlaceholder(projectId);
     }
   }
@@ -1833,6 +1967,7 @@
 
   let REMOIRE_PAGE_HTML = '';
   let CAREERFORGE_PAGE_HTML = '';
+  let GENERATOR_PAGE_HTML = '';
 
   function init() {
     if (global.JingerArchive) return;
@@ -1842,6 +1977,9 @@
     }
     if (global.CAREERFORGE_PAGE_HTML_GLOBAL) {
       CAREERFORGE_PAGE_HTML = global.CAREERFORGE_PAGE_HTML_GLOBAL;
+    }
+    if (global.GENERATOR_PAGE_HTML_GLOBAL) {
+      GENERATOR_PAGE_HTML = global.GENERATOR_PAGE_HTML_GLOBAL;
     }
 
     const scene = new ArchiveScene();
