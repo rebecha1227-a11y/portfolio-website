@@ -28,20 +28,20 @@
             </div>
             <div class="gen-hero-stats">
               <div class="gen-stat">
-                <span class="gen-stat-icon">⏱</span>
+                <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
                 <span class="gen-stat-value lang-zh">30 min → 1 min</span>
                 <span class="gen-stat-value lang-en">30 min → 1 min</span>
                 <span class="gen-stat-label lang-zh">效率提升</span>
                 <span class="gen-stat-label lang-en">Efficiency Boost</span>
               </div>
               <div class="gen-stat">
-                <span class="gen-stat-icon">🎨</span>
+                <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 <span class="gen-stat-value">3</span>
                 <span class="gen-stat-label lang-zh">创作风格</span>
                 <span class="gen-stat-label lang-en">Writing Styles</span>
               </div>
               <div class="gen-stat">
-                <span class="gen-stat-icon">📐</span>
+                <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                 <span class="gen-stat-value">5</span>
                 <span class="gen-stat-label lang-zh">卡片布局</span>
                 <span class="gen-stat-label lang-en">Card Layouts</span>
@@ -49,10 +49,15 @@
             </div>
           </div>
           <div class="gen-hero-cards">
-            <div class="gen-card-stack">
-              <img class="gen-stack-card gen-stack-back" src="screenshots/generator/card-terminal.JPG" alt="Terminal card" loading="lazy">
-              <img class="gen-stack-card gen-stack-mid" src="screenshots/generator/card-text.JPG" alt="Text card" loading="lazy">
-              <img class="gen-stack-card gen-stack-front" src="screenshots/generator/card-cover.JPG" alt="Cover card" loading="lazy">
+            <div class="gen-stamp-grid" id="gen-stamp-grid">
+              <img class="gen-stamp" src="screenshots/generator/card-cover.JPG" alt="Cover card" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/card-text.JPG" alt="Text card" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/card-list.JPG" alt="List card" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/card-terminal.JPG" alt="Terminal card" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/card-grid.JPG" alt="Grid card" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/note_history.png" alt="Note history" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/Note-caption.png" alt="Note caption" loading="lazy">
+              <img class="gen-stamp" src="screenshots/generator/ai-rewrite.png" alt="AI rewrite" loading="lazy">
             </div>
           </div>
         </div>
@@ -67,86 +72,61 @@
           <span class="gen-section-label lang-en">How It Works</span>
         </div>
 
-        <div class="gen-step">
-          <div class="gen-step-meta">
-            <span class="gen-step-num">01</span>
-            <div class="gen-step-text">
-              <h3 class="lang-zh">输入灵感</h3>
-              <h3 class="lang-en">Input Your Idea</h3>
-              <p class="lang-zh">写下想法，选择创作风格（推特金句 / 爆款氛围 / 干货教程），贴上参考链接。</p>
-              <p class="lang-en">Write your idea, pick a style (Twitter Quotes / Trending Vibes / Tutorial), and add reference links.</p>
+        <div class="gen-steps-grid">
+          <div class="gen-step-card">
+            <div class="gen-step-card-header">
+              <span class="gen-step-num">01</span>
+              <svg class="gen-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18"/><path d="M8 8l4-4 4 4"/><path d="M8 16l4 4 4-4"/></svg>
+            </div>
+            <h3 class="lang-zh">输入灵感</h3>
+            <h3 class="lang-en">Input Your Idea</h3>
+            <p class="lang-zh">写下想法，选择创作风格，贴上参考链接。</p>
+            <p class="lang-en">Write your idea, pick a style, add reference links.</p>
+            <div class="gen-step-thumb">
+              <img src="screenshots/generator/input.png" alt="Input interface" loading="lazy">
             </div>
           </div>
-          <div class="gen-step-image">
-            <img src="screenshots/generator/input.png" alt="Input interface" loading="lazy">
-          </div>
-        </div>
 
-        <div class="gen-divider-thin"></div>
-
-        <div class="gen-step">
-          <div class="gen-step-meta">
-            <span class="gen-step-num">02</span>
-            <div class="gen-step-text">
-              <h3 class="lang-zh">AI 生成卡片</h3>
-              <h3 class="lang-en">AI Generates Cards</h3>
-              <p class="lang-zh">等待片刻，AI 一次性生成全套卡片 — 封面、内容页、列表、终端、网格，五种布局自动编排。</p>
-              <p class="lang-en">Wait a moment, then AI generates a full set of cards at once — cover, text, list, terminal, grid — five layouts auto-arranged.</p>
+          <div class="gen-step-card">
+            <div class="gen-step-card-header">
+              <span class="gen-step-num">02</span>
+              <svg class="gen-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            </div>
+            <h3 class="lang-zh">AI 生成卡片</h3>
+            <h3 class="lang-en">AI Generates</h3>
+            <p class="lang-zh">AI 一次性生成全套卡片，五种布局自动编排。</p>
+            <p class="lang-en">AI generates a full set of cards with five layouts.</p>
+            <div class="gen-step-thumb">
+              <img src="screenshots/generator/Hero.png" alt="AI generation" loading="lazy">
             </div>
           </div>
-          <div class="gen-step-image">
-            <img src="screenshots/generator/export.png" alt="Generated cards" loading="lazy">
-          </div>
-        </div>
 
-        <div class="gen-divider-thin"></div>
-
-        <div class="gen-step">
-          <div class="gen-step-meta">
-            <span class="gen-step-num">03</span>
-            <div class="gen-step-text">
-              <h3 class="lang-zh">正文生成</h3>
-              <h3 class="lang-en">Caption Generation</h3>
-              <p class="lang-zh">同步生成小红书笔记正文和标签，一键复制，直接粘贴发布。</p>
-              <p class="lang-en">Auto-generates caption text and hashtags alongside cards. One click to copy, paste, and publish.</p>
+          <div class="gen-step-card">
+            <div class="gen-step-card-header">
+              <span class="gen-step-num">03</span>
+              <svg class="gen-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <h3 class="lang-zh">所见即所得编辑</h3>
+            <h3 class="lang-en">Edit In Place</h3>
+            <p class="lang-zh">点击文字直接修改，AI 辅助局部改写。</p>
+            <p class="lang-en">Click any text to edit, AI helps rewrite selections.</p>
+            <div class="gen-step-thumb">
+              <img src="screenshots/generator/Edit-In-Place.png" alt="Edit in place" loading="lazy">
             </div>
           </div>
-          <div class="gen-step-image">
-            <img src="screenshots/generator/Note-caption.png" alt="Caption generation" loading="lazy">
-          </div>
-        </div>
 
-        <div class="gen-divider-thin"></div>
-
-        <div class="gen-step">
-          <div class="gen-step-meta">
-            <span class="gen-step-num">04</span>
-            <div class="gen-step-text">
-              <h3 class="lang-zh">所见即所得编辑</h3>
-              <h3 class="lang-en">Edit In Place</h3>
-              <p class="lang-zh">点击卡片上任何文字直接修改。选中文字后可以调用 AI 局部改写 — "更犀利"、"更小红书"。</p>
-              <p class="lang-en">Click any text on a card to edit directly. Select text and invoke AI to rewrite — "make it sharper", "more trendy".</p>
+          <div class="gen-step-card">
+            <div class="gen-step-card-header">
+              <span class="gen-step-num">04</span>
+              <svg class="gen-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             </div>
-          </div>
-          <div class="gen-step-image">
-            <img src="screenshots/generator/Edit-In-Place.png" alt="Edit in place" loading="lazy">
-          </div>
-        </div>
-
-        <div class="gen-divider-thin"></div>
-
-        <div class="gen-step">
-          <div class="gen-step-meta">
-            <span class="gen-step-num">05</span>
-            <div class="gen-step-text">
-              <h3 class="lang-zh">一键导出</h3>
-              <h3 class="lang-en">One-Click Export</h3>
-              <p class="lang-zh">1242×1660px 小红书标准竖版尺寸，批量导出全套 PNG 卡片。</p>
-              <p class="lang-en">Export all cards as PNG at 1242×1660px — the standard Xiaohongshu vertical format.</p>
+            <h3 class="lang-zh">一键导出</h3>
+            <h3 class="lang-en">One-Click Export</h3>
+            <p class="lang-zh">1242×1660px 标准尺寸，批量导出 PNG。</p>
+            <p class="lang-en">Export all cards as PNG at 1242×1660px.</p>
+            <div class="gen-step-thumb">
+              <img src="screenshots/generator/export.png" alt="Export" loading="lazy">
             </div>
-          </div>
-          <div class="gen-step-image">
-            <img src="screenshots/generator/export.png" alt="Export cards" loading="lazy">
           </div>
         </div>
       </section>

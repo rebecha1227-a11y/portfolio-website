@@ -1654,12 +1654,59 @@
         );
       }
 
-      const stackCards = page.querySelectorAll('.gen-stack-card');
-      if (stackCards.length) {
-        gsap.fromTo(stackCards,
-          { opacity: 0, x: 60 },
-          { opacity: 1, x: 0, duration: 0.8, stagger: 0.12, delay: 0.3, ease: 'power2.out' }
+      const stamps = page.querySelectorAll('.gen-stamp');
+      if (stamps.length) {
+        gsap.fromTo(stamps,
+          { opacity: 0, scale: 0.7, y: 30 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.6, stagger: 0.06, delay: 0.3, ease: 'power2.out' }
         );
+
+        // omou.app-style stamp interaction
+        const stampGrid = page.querySelector('.gen-stamp-grid');
+        if (stampGrid) {
+          stampGrid.addEventListener('mousemove', (e) => {
+            const rect = stampGrid.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const mouseX = e.clientX - centerX;
+            const mouseY = e.clientY - centerY;
+
+            stamps.forEach((stamp, i) => {
+              const stampRect = stamp.getBoundingClientRect();
+              const stampCx = stampRect.left + stampRect.width / 2 - centerX;
+              const stampCy = stampRect.top + stampRect.height / 2 - centerY;
+              const dx = mouseX - stampCx;
+              const dy = mouseY - stampCy;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              const maxDist = 200;
+              const influence = Math.max(0, 1 - dist / maxDist);
+
+              const pushX = dx * influence * -0.15;
+              const pushY = dy * influence * -0.15;
+              const rotateZ = (dx * influence * 0.05) + ((i % 2 === 0 ? -3 : 2));
+
+              gsap.to(stamp, {
+                x: pushX,
+                y: pushY,
+                rotation: rotateZ,
+                duration: 0.4,
+                ease: 'power2.out'
+              });
+            });
+          });
+
+          stampGrid.addEventListener('mouseleave', () => {
+            stamps.forEach((stamp, i) => {
+              gsap.to(stamp, {
+                x: 0,
+                y: 0,
+                rotation: i % 2 === 0 ? -3 : 2,
+                duration: 0.5,
+                ease: 'elastic.out(1, 0.5)'
+              });
+            });
+          });
+        }
       }
 
       if (bc) {
@@ -1668,7 +1715,7 @@
           gsap.set(label, { opacity: 0, y: 40 });
         });
 
-        const steps = page.querySelectorAll('.gen-step, .gen-layout-item, .gen-feature, .gen-tech-highlight');
+        const steps = page.querySelectorAll('.gen-step, .gen-layout-item, .gen-feature, .gen-tech-highlight, .gen-step-card');
         steps.forEach(step => {
           gsap.set(step, { opacity: 0, y: 30 });
         });

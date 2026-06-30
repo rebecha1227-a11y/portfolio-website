@@ -3370,9 +3370,10 @@ body.archive-active .pixel-pet-container {
   --gen-cream: #FFF8EE;
   --gen-shadow: 0 4px 24px rgba(44, 30, 16, 0.06);
   --gen-shadow-hover: 0 12px 40px rgba(44, 30, 16, 0.12);
-  --gen-font-display: 'Young Serif', 'Libre Caslon Text', Georgia, serif;
-  --gen-font-body: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+  --gen-font-display: 'Playfair Display', 'Young Serif', Georgia, serif;
+  --gen-font-body: 'LXGW WenKai', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
   --gen-font-brand: 'Dancing Script', cursive;
+  --gen-font-zh-title: 'ZCOOL XiaoWei', 'LXGW WenKai', serif;
 
   background: var(--gen-bg);
   color: var(--gen-text);
@@ -3567,62 +3568,57 @@ body.archive-active .pixel-pet-container {
   text-transform: uppercase;
 }
 
-/* ─── Card Stack ─────────────────────────────────────────────────── */
+/* ─── Stamp Grid (omou.app style) ────────────────────────────────── */
 
 .gen-hero-cards {
   flex-shrink: 0;
-  width: 320px;
+  width: 420px;
+  perspective: 1200px;
 }
 
-.gen-card-stack {
-  position: relative;
-  width: 220px;
-  height: 320px;
-  margin: 0 auto;
+.gen-stamp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 20px;
 }
 
-.gen-stack-card {
-  position: absolute;
-  width: 200px;
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(44, 30, 16, 0.12), 0 2px 8px rgba(44, 30, 16, 0.06);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+.gen-stamp {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px rgba(44, 30, 16, 0.12);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+  cursor: pointer;
   filter: url(#genInkFilter);
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
-.gen-stack-back {
-  top: 0;
-  left: 0;
-  transform: rotate(-8deg) translateY(10px);
-  z-index: 1;
+.gen-stamp:nth-child(odd) {
+  transform: rotate(-3deg);
 }
 
-.gen-stack-mid {
-  top: 0;
-  left: 20px;
-  transform: rotate(3deg) translateY(-5px);
-  z-index: 2;
+.gen-stamp:nth-child(even) {
+  transform: rotate(2deg);
 }
 
-.gen-stack-front {
-  top: 0;
-  left: 10px;
-  transform: rotate(-2deg);
-  z-index: 3;
+.gen-stamp:nth-child(3n) {
+  transform: rotate(1.5deg) translateY(-4px);
 }
 
-.gen-card-stack:hover .gen-stack-back {
-  transform: rotate(-12deg) translateY(15px) translateX(-10px);
+.gen-stamp:nth-child(5n) {
+  transform: rotate(-2deg) translateY(3px);
 }
 
-.gen-card-stack:hover .gen-stack-mid {
-  transform: rotate(6deg) translateY(-10px) translateX(5px);
+.gen-stamp:hover {
+  transform: scale(1.15) rotate(0deg) translateZ(40px) !important;
+  box-shadow: 0 16px 40px rgba(44, 30, 16, 0.22);
+  z-index: 10;
 }
 
-.gen-card-stack:hover .gen-stack-front {
-  transform: rotate(0deg) translateY(-5px);
-  box-shadow: 0 16px 48px rgba(44, 30, 16, 0.16), 0 4px 12px rgba(44, 30, 16, 0.08);
-}
+/* ─── Steps Grid (new How It Works) ──────────────────────────────── */
 
 /* ═══ SECTIONS ══════════════════════════════════════════════════════ */
 
@@ -3657,20 +3653,19 @@ body.archive-active .pixel-pet-container {
 
 .gen-step-num {
   font-family: var(--gen-font-display);
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 400;
   color: var(--gen-accent);
-  opacity: 0.4;
+  opacity: 0.35;
   line-height: 1;
   flex-shrink: 0;
-  min-width: 64px;
 }
 
 .gen-step-text h3 {
   font-family: var(--gen-font-display);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   color: var(--gen-text);
 }
 
@@ -3696,6 +3691,84 @@ body.archive-active .pixel-pet-container {
 .gen-step-image img:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 40px rgba(44, 30, 16, 0.12), 0 2px 10px rgba(44, 30, 16, 0.06);
+}
+
+/* ─── Steps Grid (new How It Works) ─────────────────────────────────── */
+
+.gen-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.gen-step-card {
+  background: var(--gen-cream);
+  border: 1px solid rgba(196, 97, 58, 0.08);
+  border-radius: 12px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.gen-step-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--gen-shadow-hover);
+}
+
+.gen-step-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.gen-step-card .gen-step-num {
+  font-size: 28px;
+  opacity: 0.25;
+}
+
+.gen-step-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--gen-accent);
+  opacity: 0.5;
+}
+
+.gen-step-card h3 {
+  font-family: var(--gen-font-display);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--gen-text);
+}
+
+.gen-step-card p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--gen-text-body);
+  margin: 0;
+  flex-grow: 1;
+}
+
+.gen-step-thumb {
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.gen-step-thumb img {
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(44, 30, 16, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.gen-step-card:hover .gen-step-thumb img {
+  transform: scale(1.03);
 }
 
 /* ─── LAYOUTS (Card Layouts) ────────────────────────────────────────── */
@@ -3897,6 +3970,15 @@ body.archive-active .pixel-pet-container {
 
 /* ═══ RESPONSIVE ════════════════════════════════════════════════════ */
 
+@media (max-width: 1024px) {
+  .gen-stamp-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .gen-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 680px) {
   .gen-hero {
     padding: 80px 24px 40px;
@@ -3916,13 +3998,10 @@ body.archive-active .pixel-pet-container {
     width: 100%;
   }
 
-  .gen-card-stack {
-    width: 200px;
-    height: 300px;
-  }
-
-  .gen-stack-card {
-    width: 180px;
+  .gen-stamp-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 12px;
   }
 
   .gen-hero-stats {
@@ -3932,6 +4011,11 @@ body.archive-active .pixel-pet-container {
 
   .gen-section {
     padding: 80px 24px;
+  }
+
+  .gen-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .gen-step-meta,
