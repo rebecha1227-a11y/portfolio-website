@@ -1654,68 +1654,116 @@
         );
       }
 
-      const stamps = page.querySelectorAll('.gen-stamp');
-      if (stamps.length) {
-        gsap.fromTo(stamps,
-          { opacity: 0, scale: 0.7, y: 30 },
-          { opacity: 1, scale: 1, y: 0, duration: 0.6, stagger: 0.06, delay: 0.3, ease: 'power2.out' }
+      const cardStack = page.querySelector('#gen-card-stack');
+      const stackCards = page.querySelectorAll('.gen-stack-card');
+      if (cardStack && stackCards.length) {
+        const defaultTransforms = [
+          { x: -30, rotation: -9, y: 0 },
+          { x: -15, rotation: -5, y: 0 },
+          { x: 0,   rotation: 0,  y: 0 },
+          { x: 15,  rotation: 5,  y: 0 },
+          { x: 30,  rotation: 9,  y: 0 },
+        ];
+        const spreadTransforms = [
+          { x: -120, rotation: -18, y: 10 },
+          { x: -60,  rotation: -9,  y: -8 },
+          { x: 0,    rotation: 0,   y: -12 },
+          { x: 60,   rotation: 9,   y: -8 },
+          { x: 120,  rotation: 18,  y: 10 },
+        ];
+
+        gsap.fromTo(stackCards,
+          { opacity: 0, scale: 0.7 },
+          { opacity: 1, scale: 1, duration: 0.5, stagger: 0.06, delay: 0.3, ease: 'power2.out',
+            onComplete: () => {
+              stackCards.forEach((card, i) => {
+                const d = defaultTransforms[i] || defaultTransforms[2];
+                gsap.set(card, { x: d.x, y: d.y, rotation: d.rotation, scale: 1 });
+              });
+            }
+          }
         );
 
-        // omou.app-style stamp interaction
-        const stampGrid = page.querySelector('.gen-stamp-grid');
-        if (stampGrid) {
-          stampGrid.addEventListener('mousemove', (e) => {
-            const rect = stampGrid.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const mouseX = e.clientX - centerX;
-            const mouseY = e.clientY - centerY;
+        cardStack.addEventListener('mouseenter', () => {
+          stackCards.forEach((card, i) => {
+            const s = spreadTransforms[i] || spreadTransforms[2];
+            gsap.to(card, { x: s.x, y: s.y, rotation: s.rotation, duration: 0.38, ease: 'power2.out' });
+          });
+        });
+        cardStack.addEventListener('mouseleave', () => {
+          stackCards.forEach((card, i) => {
+            const d = defaultTransforms[i] || defaultTransforms[2];
+            gsap.to(card, { x: d.x, y: d.y, rotation: d.rotation, duration: 0.38, ease: 'power2.out' });
+          });
+        });
 
-            stamps.forEach((stamp, i) => {
-              const stampRect = stamp.getBoundingClientRect();
-              const stampCx = stampRect.left + stampRect.width / 2 - centerX;
-              const stampCy = stampRect.top + stampRect.height / 2 - centerY;
-              const dx = mouseX - stampCx;
-              const dy = mouseY - stampCy;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              const maxDist = 200;
-              const influence = Math.max(0, 1 - dist / maxDist);
-
-              const pushX = dx * influence * -0.15;
-              const pushY = dy * influence * -0.15;
-              const rotateZ = (dx * influence * 0.05) + ((i % 2 === 0 ? -3 : 2));
-
-              gsap.to(stamp, {
-                x: pushX,
-                y: pushY,
-                rotation: rotateZ,
-                duration: 0.4,
-                ease: 'power2.out'
-              });
+        const lightbox = page.querySelector('#gen-lightbox');
+        const lightboxImg = page.querySelector('#gen-lightbox-img');
+        if (lightbox && lightboxImg) {
+          stackCards.forEach(card => {
+            card.addEventListener('click', () => {
+              const img = card.querySelector('img');
+              if (img) {
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                lightbox.classList.add('active');
+              }
             });
           });
-
-          stampGrid.addEventListener('mouseleave', () => {
-            stamps.forEach((stamp, i) => {
-              gsap.to(stamp, {
-                x: 0,
-                y: 0,
-                rotation: i % 2 === 0 ? -3 : 2,
-                duration: 0.5,
-                ease: 'elastic.out(1, 0.5)'
-              });
-            });
+          lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('active');
           });
         }
       }
 
-      if (bc) {
-        const sectionLabels = page.querySelectorAll('.gen-section-label');
-        sectionLabels.forEach(label => {
-          gsap.set(label, { opacity: 0, y: 40 });
+      // Custom cursor with smooth trailing
+      const cursor = page.querySelector('#gen-cursor');
+      if (cursor && bc) {
+        document.body.appendChild(cursor);
+
+        let cursorX = 0, cursorY = 0, targetX = 0, targetY = 0;
+        let cursorVisible = false;
+        const lerp = (a, b, n) => a + (b - a) * n;
+
+        bc.addEventListener('mousemove', (e) => {
+          targetX = e.clientX;
+          targetY = e.clientY;
+          if (!cursorVisible) {
+            cursorX = targetX;
+            cursorY = targetY;
+            cursorVisible = true;
+            cursor.classList.add('visible');
+          }
         });
 
-        const steps = page.querySelectorAll('.gen-step, .gen-layout-item, .gen-feature, .gen-tech-highlight, .gen-step-card');
+        bc.addEventListener('mouseleave', () => {
+          cursorVisible = false;
+          cursor.classList.remove('visible');
+        });
+
+        const interactives = page.querySelectorAll('a, button, .gen-stack-card');
+        interactives.forEach(el => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+        });
+
+        function animateCursor() {
+          cursorX = lerp(cursorX, targetX, 0.3);
+          cursorY = lerp(cursorY, targetY, 0.3);
+          cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+          requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+      }
+
+      if (bc) {
+        // Section labels — slide-up mask reveal (overflow:hidden on parent)
+        const sectionLabels = page.querySelectorAll('.gen-section-label');
+        sectionLabels.forEach(label => {
+          gsap.set(label, { yPercent: 120, opacity: 0 });
+        });
+
+        const steps = page.querySelectorAll('.gen-flow-step, .gen-layout-row, .gen-feature, .gen-tech-highlight');
         steps.forEach(step => {
           gsap.set(step, { opacity: 0, y: 30 });
         });
@@ -1725,17 +1773,15 @@
           gsap.set(pill, { opacity: 0, scale: 0.8 });
         });
 
-        const ctaTitle = page.querySelector('.gen-cta-title');
-        if (ctaTitle) gsap.set(ctaTitle, { opacity: 0, y: 30 });
+        const ctaTitles = page.querySelectorAll('.gen-cta-title');
+        ctaTitles.forEach(t => gsap.set(t, { yPercent: 120, opacity: 0 }));
 
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               const el = entry.target;
-              if (el.classList.contains('gen-section-label')) {
-                gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
-              } else if (el.classList.contains('gen-cta-title')) {
-                gsap.to(el, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+              if (el.classList.contains('gen-section-label') || el.classList.contains('gen-cta-title')) {
+                gsap.to(el, { opacity: 1, yPercent: 0, duration: 1.2, ease: 'power4.out' });
               } else if (el.classList.contains('gen-pill')) {
                 gsap.to(el, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)' });
               } else {
@@ -1749,7 +1795,7 @@
         sectionLabels.forEach(l => observer.observe(l));
         steps.forEach(s => observer.observe(s));
         pills.forEach(p => observer.observe(p));
-        if (ctaTitle) observer.observe(ctaTitle);
+        ctaTitles.forEach(t => observer.observe(t));
       }
     }
 

@@ -3498,6 +3498,7 @@ body.archive-active .pixel-pet-container {
   display: flex;
   gap: 48px;
   align-items: center;
+  justify-content: space-between;
 }
 
 .gen-hero-content {
@@ -3568,54 +3569,150 @@ body.archive-active .pixel-pet-container {
   text-transform: uppercase;
 }
 
-/* ─── Stamp Grid (omou.app style) ────────────────────────────────── */
+/* ─── Paper Texture ──────────────────────────────────────────────── */
+
+.gen-paper-texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  filter: contrast(1.5);
+}
+
+/* ─── Custom Cursor ──────────────────────────────────────────────── */
+
+.gen-page {
+  position: relative;
+  cursor: none;
+}
+
+.gen-page *,
+.gen-page a,
+.gen-page button {
+  cursor: none !important;
+}
+
+.gen-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gen-accent);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.15s ease;
+}
+
+.gen-cursor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gen-accent);
+  transform: translate(-50%, -50%);
+}
+
+.gen-cursor.visible {
+  opacity: 1;
+}
+
+.gen-cursor.hovering {
+  width: 56px;
+  height: 56px;
+  background: rgba(196, 97, 58, 0.08);
+}
+
+/* ─── Card Stack (omou.app style) ────────────────────────────────── */
 
 .gen-hero-cards {
-  flex-shrink: 0;
-  width: 420px;
-  perspective: 1200px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5%;
 }
 
-.gen-stamp-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 20px;
-}
-
-.gen-stamp {
-  width: 100%;
-  aspect-ratio: 3/4;
-  object-fit: cover;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px rgba(44, 30, 16, 0.12);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+.gen-card-stack {
+  position: relative;
+  width: 340px;
+  height: 360px;
   cursor: pointer;
-  filter: url(#genInkFilter);
-  transform-style: preserve-3d;
+}
+
+.gen-stack-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  outline: none;
   will-change: transform;
 }
 
-.gen-stamp:nth-child(odd) {
-  transform: rotate(-3deg);
+.gen-stack-card img {
+  height: 260px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(44, 30, 16, 0.15);
+  pointer-events: none;
 }
 
-.gen-stamp:nth-child(even) {
-  transform: rotate(2deg);
+.gen-stack-card[data-index="0"] { z-index: 1; }
+.gen-stack-card[data-index="1"] { z-index: 2; }
+.gen-stack-card[data-index="2"] { z-index: 5; }
+.gen-stack-card[data-index="3"] { z-index: 3; }
+.gen-stack-card[data-index="4"] { z-index: 4; }
+
+/* ─── Lightbox ───────────────────────────────────────────────────── */
+
+.gen-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 253, 245, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='10' y1='10' x2='22' y2='22' stroke='%23C4613A' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='22' y1='10' x2='10' y2='22' stroke='%23C4613A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 16 16, pointer;
 }
 
-.gen-stamp:nth-child(3n) {
-  transform: rotate(1.5deg) translateY(-4px);
+.gen-lightbox.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.gen-stamp:nth-child(5n) {
-  transform: rotate(-2deg) translateY(3px);
+.gen-lightbox-img {
+  max-width: 85vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 24px 80px rgba(44, 30, 16, 0.2);
+  transform: scale(0.85);
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.gen-stamp:hover {
-  transform: scale(1.15) rotate(0deg) translateZ(40px) !important;
-  box-shadow: 0 16px 40px rgba(44, 30, 16, 0.22);
-  z-index: 10;
+.gen-lightbox.active .gen-lightbox-img {
+  transform: scale(1);
 }
 
 /* ─── Steps Grid (new How It Works) ──────────────────────────────── */
@@ -3628,6 +3725,7 @@ body.archive-active .pixel-pet-container {
 
 .gen-section-header {
   margin-bottom: 100px;
+  overflow: hidden;
 }
 
 .gen-section-label {
@@ -3636,6 +3734,8 @@ body.archive-active .pixel-pet-container {
   font-weight: 400;
   color: var(--gen-accent);
   letter-spacing: -0.02em;
+  display: inline-block;
+  will-change: transform;
 }
 
 /* ─── STEPS (How It Works) ──────────────────────────────────────────── */
@@ -3693,124 +3793,140 @@ body.archive-active .pixel-pet-container {
   box-shadow: 0 12px 40px rgba(44, 30, 16, 0.12), 0 2px 10px rgba(44, 30, 16, 0.06);
 }
 
-/* ─── Steps Grid (new How It Works) ─────────────────────────────────── */
+/* ─── Flow (How It Works - alternating) ────────────────────────────── */
 
-.gen-steps-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.gen-step-card {
-  background: var(--gen-cream);
-  border: 1px solid rgba(196, 97, 58, 0.08);
-  border-radius: 12px;
-  padding: 28px 20px;
+.gen-flow {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  gap: 80px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.gen-step-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--gen-shadow-hover);
-}
-
-.gen-step-card-header {
-  display: flex;
+.gen-flow-step {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  gap: 32px 40px;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4px;
 }
 
-.gen-step-card .gen-step-num {
-  font-size: 28px;
-  opacity: 0.25;
+.gen-flow-step.gen-flow-reverse {
+  grid-template-columns: 1fr 1fr auto;
 }
 
-.gen-step-icon {
-  width: 28px;
-  height: 28px;
-  color: var(--gen-accent);
-  opacity: 0.5;
-}
+.gen-flow-step.gen-flow-reverse .gen-flow-num { order: 3; }
+.gen-flow-step.gen-flow-reverse .gen-flow-body { order: 2; }
+.gen-flow-step.gen-flow-reverse .gen-flow-img { order: 1; }
 
-.gen-step-card h3 {
+.gen-flow-num {
   font-family: var(--gen-font-display);
-  font-size: 18px;
+  font-size: 64px;
   font-weight: 400;
-  margin: 0;
+  color: var(--gen-accent);
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.gen-flow-body h3 {
+  font-family: var(--gen-font-display);
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 12px;
   color: var(--gen-text);
 }
 
-.gen-step-card p {
-  font-size: 13px;
-  line-height: 1.65;
+.gen-flow-body p {
+  font-size: 15px;
+  line-height: 1.7;
   color: var(--gen-text-body);
   margin: 0;
-  flex-grow: 1;
-}
-
-.gen-step-thumb {
-  margin-top: auto;
-  padding-top: 12px;
-}
-
-.gen-step-thumb img {
-  width: 100%;
-  border-radius: 6px;
-  box-shadow: 0 2px 12px rgba(44, 30, 16, 0.08);
-  transition: transform 0.3s ease;
-}
-
-.gen-step-card:hover .gen-step-thumb img {
-  transform: scale(1.03);
-}
-
-/* ─── LAYOUTS (Card Layouts) ────────────────────────────────────────── */
-
-.gen-layout-item {
-  padding: 48px 0;
-}
-
-.gen-layout-meta {
-  display: flex;
-  gap: 32px;
-  align-items: flex-start;
-  margin-bottom: 40px;
-}
-
-.gen-layout-info h3 {
-  font-family: var(--gen-font-display);
-  font-size: 28px;
-  font-weight: 400;
-  margin: 0 0 8px;
-  color: var(--gen-text);
-}
-
-.gen-layout-info p {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--gen-text-muted);
-  margin: 0;
-}
-
-.gen-layout-image {
   max-width: 400px;
 }
 
-.gen-layout-image img {
+.gen-flow-img {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.gen-flow-img img {
   width: 100%;
-  border-radius: 6px;
+  max-height: 380px;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
   box-shadow: 0 4px 24px rgba(44, 30, 16, 0.08), 0 1px 6px rgba(44, 30, 16, 0.04);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-.gen-layout-image img:hover {
+.gen-flow-img img:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(44, 30, 16, 0.12), 0 2px 10px rgba(44, 30, 16, 0.06);
+}
+
+/* ─── Layout Showcase (5 Layouts - alternating) ──────────────────── */
+
+.gen-layout-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.gen-layout-row {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+
+.gen-layout-row.gen-layout-row-reverse {
+  flex-direction: row-reverse;
+}
+
+.gen-layout-text {
+  flex: 1;
+  min-width: 240px;
+}
+
+.gen-layout-num {
+  display: block;
+  font-family: var(--gen-font-display);
+  font-size: 48px;
+  font-weight: 400;
+  color: var(--gen-accent);
+  opacity: 0.2;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.gen-layout-text h3 {
+  font-family: var(--gen-font-display);
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0 0 12px;
+  color: var(--gen-text);
+}
+
+.gen-layout-text p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--gen-text-muted);
+  margin: 0;
+}
+
+.gen-layout-preview {
+  flex: 1;
+  max-width: 340px;
+}
+
+.gen-layout-preview img {
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 6px 30px rgba(44, 30, 16, 0.1), 0 2px 8px rgba(44, 30, 16, 0.05);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.gen-layout-preview img:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 40px rgba(44, 30, 16, 0.12), 0 2px 10px rgba(44, 30, 16, 0.06);
 }
@@ -3853,8 +3969,9 @@ body.archive-active .pixel-pet-container {
 }
 
 .gen-feature-image {
-  flex: 1;
-  min-width: 240px;
+  flex: 0 1 360px;
+  max-width: 360px;
+  min-width: 200px;
 }
 
 .gen-feature-image img {
@@ -3940,6 +4057,10 @@ body.archive-active .pixel-pet-container {
   border-top: 1px dashed rgba(196, 97, 58, 0.25);
 }
 
+.gen-cta-title-wrap {
+  overflow: hidden;
+}
+
 .gen-cta-title {
   font-family: var(--gen-font-display);
   font-size: clamp(40px, 6vw, 72px);
@@ -3947,6 +4068,8 @@ body.archive-active .pixel-pet-container {
   margin: 0 0 16px;
   color: var(--gen-text);
   letter-spacing: -0.02em;
+  display: inline-block;
+  will-change: transform;
 }
 
 .gen-cta-sub {
@@ -3971,11 +4094,12 @@ body.archive-active .pixel-pet-container {
 /* ═══ RESPONSIVE ════════════════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
-  .gen-stamp-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .gen-flow-step {
+    grid-template-columns: auto 1fr 1fr;
+    gap: 24px 32px;
   }
-  .gen-steps-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .gen-flow-step.gen-flow-reverse {
+    grid-template-columns: 1fr 1fr auto;
   }
 }
 
@@ -3998,10 +4122,17 @@ body.archive-active .pixel-pet-container {
     width: 100%;
   }
 
-  .gen-stamp-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    padding: 12px;
+  .gen-hero-cards {
+    width: 100%;
+  }
+
+  .gen-card-stack {
+    width: 280px;
+    height: 300px;
+  }
+
+  .gen-stack-card img {
+    height: 180px;
   }
 
   .gen-hero-stats {
@@ -4013,20 +4144,25 @@ body.archive-active .pixel-pet-container {
     padding: 80px 24px;
   }
 
-  .gen-steps-grid {
+  .gen-flow-step,
+  .gen-flow-step.gen-flow-reverse {
     grid-template-columns: 1fr;
-    gap: 16px;
+    direction: ltr;
+    text-align: center;
   }
 
-  .gen-step-meta,
-  .gen-layout-meta {
+  .gen-flow-num {
+    font-size: 48px;
+  }
+
+  .gen-layout-row,
+  .gen-layout-row.gen-layout-row-reverse {
     flex-direction: column;
-    gap: 12px;
+    gap: 24px;
   }
 
-  .gen-step-num {
-    font-size: 36px;
-    min-width: auto;
+  .gen-layout-preview {
+    max-width: 280px;
   }
 
   .gen-feature {
