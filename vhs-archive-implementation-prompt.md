@@ -1,5 +1,8 @@
 # VHS Archive Experience — AI Design Tool Implementation Prompt
 
+> ⚠️ **历史文档**：写于 Archive 初版实现前，文中 `second_version.html` 已合并为根目录 `index.html`。  
+> **以当前代码为准** → [`CLAUDE.md`](./CLAUDE.md) · [`archive/archive.js`](./archive/archive.js)
+
 ## 文档目的
 
 这份 prompt 是给设计类 AI 工具（如 Cursor、v0、Bolt、Windsurf 等）的精确指令。目标是在现有的 Jinger OS 作品集网站基础上，实现"项目展示"板块的 VHS Archive 交互体验。

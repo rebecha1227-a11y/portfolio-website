@@ -1,6 +1,10 @@
 # Jinger OS — Design System v2.0
 ## The VHS Archive Experience
 
+> **文档角色**：VHS Archive（磁带柜 → CRT → 浏览器壳）交互与视觉规范。  
+> **代码地图 & 文件结构** → 见 [`CLAUDE.md`](./CLAUDE.md)  
+> **桌面层视觉** → 见 [`DESIGN.md`](./DESIGN.md) · **文案** → 见 [`jingeros-content-plan-v2.md`](./jingeros-content-plan-v2.md)
+
 ---
 
 ## 0. Connie 的修订说明

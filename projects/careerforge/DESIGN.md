@@ -1,4 +1,8 @@
 # CareerForge — Design System
+
+> **文档角色**：CareerForge 磁带页专属视觉说明（Kimi 招聘页风格复刻）。  
+> **全站文件 map** → [`../../CLAUDE.md`](../../CLAUDE.md)
+
 > 基于 careers.kimi.com/about-us 的视觉语言复刻
 
 ---

@@ -1,5 +1,9 @@
 # DESIGN.md — 静儿的个人作品集网站
 
+> **文档角色**：桌面层（JingerOS 窗口 / 终端 / Dock）视觉与组件规范，以及**未来开机 3D 场景**等愿景（键盘、像素小人亚克力立牌、ASCII 背景等）。  
+> **未实现章节请保留**，不要当废弃内容删掉。实现状态对照 → [`CLAUDE.md`](./CLAUDE.md) §设计文档 vs 当前实现  
+> **代码地图** → [`CLAUDE.md`](./CLAUDE.md) · **VHS Archive** → [`jingeros-design-system-v2.md`](./jingeros-design-system-v2.md)
+
 > AI 产品经理 · AI Native Builder · Vibe Coder
 > 千禧复古 × 像素 × ASCII Art × 早期 Apple UI
 
