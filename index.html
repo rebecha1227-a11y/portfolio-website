@@ -2732,6 +2732,7 @@
     function toggleLanguage() {
       document.body.classList.toggle('lang-en');
       initTypewriter();
+      document.dispatchEvent(new Event('jingeros:lang-change'));
     }
 
     // ─── SEGMENTED TAB CONTROL SYSTEM ───

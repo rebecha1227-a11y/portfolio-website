@@ -42,8 +42,7 @@
             <div class="gen-hero-stats">
               <div class="gen-stat">
                 <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-                <span class="gen-stat-value lang-zh">30 min → 1 min</span>
-                <span class="gen-stat-value lang-en">30 min → 1 min</span>
+                <span class="gen-stat-value">30 min → 1 min</span>
                 <span class="gen-stat-label lang-zh">效率提升</span>
                 <span class="gen-stat-label lang-en">Efficiency Boost</span>
               </div>

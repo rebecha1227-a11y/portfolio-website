@@ -3421,7 +3421,6 @@ body.archive-active .pixel-pet-container {
 .gen-page .gen-hero-sub.lang-en,
 .gen-page .gen-cta-sub.lang-en,
 .gen-page .gen-stat-label.lang-en,
-.gen-page .gen-stat-value.lang-en,
 .gen-page .gen-flow-body p.lang-en,
 .gen-page .gen-layout-text p.lang-en,
 .gen-page .gen-feature-text p.lang-en,
@@ -3450,7 +3449,15 @@ body.lang-en .gen-page .lang-en {
 }
 
 body.lang-en .gen-page span.lang-en {
-  display: block;
+  display: block !important;
+}
+
+body.lang-en .gen-page h3.lang-en,
+body.lang-en .gen-page h4.lang-en,
+body.lang-en .gen-page p.lang-en,
+body.lang-en .gen-page .gen-hero-sub.lang-en,
+body.lang-en .gen-page .gen-cta-sub.lang-en {
+  display: block !important;
 }
 
 .generator-theme .project-subnav {
@@ -3634,7 +3641,7 @@ body.lang-en .gen-page span.lang-en {
 }
 
 .gen-stat-value {
-  font-family: var(--gen-font-display);
+  font-family: var(--gen-font-body);
   font-size: 20px;
   font-weight: 400;
   color: var(--gen-text);

@@ -1618,7 +1618,11 @@
 
     _prepareGenCtaTitles(page) {
       page.querySelectorAll('.gen-cta-title').forEach(title => {
-        if (title.dataset.genSplit) return;
+        if (title.dataset.genSplit) {
+          gsap.set(title, { opacity: 1 });
+          gsap.set(title.querySelectorAll('.gen-cta-char'), { yPercent: 100, opacity: 0 });
+          return;
+        }
         const text = title.textContent.trim();
         title.textContent = '';
         title.dataset.genSplit = '1';
@@ -2030,11 +2034,26 @@
       };
     }
 
+    _resetGeneratorRevealState(page) {
+      page.querySelectorAll('.gen-section').forEach(section => {
+        delete section.dataset.genRevealed;
+      });
+      page.querySelectorAll('.gen-section-label').forEach(label => {
+        delete label.dataset.genInkDone;
+        label.style.filter = '';
+      });
+      page.querySelectorAll('.gen-cta-title').forEach(title => {
+        delete title.dataset.genCtaPlayed;
+      });
+    }
+
     _initGeneratorAnimations() {
       const page = document.querySelector('.gen-page');
       if (!page) return;
 
       const bc = page.closest('.browser-content');
+
+      this._resetGeneratorRevealState(page);
 
       if (page._genGrainCleanup) page._genGrainCleanup();
       page._genGrainCleanup = this._initGenGrainCanvas(page);
@@ -2090,7 +2109,10 @@
         );
       }
 
-      const heroSub = page.querySelectorAll('.gen-hero-sub');
+      const isEn = document.body.classList.contains('lang-en');
+      const heroSub = [...page.querySelectorAll('.gen-hero-sub')].filter(el =>
+        isEn ? el.classList.contains('lang-en') : true
+      );
       if (heroSub.length) {
         gsap.fromTo(heroSub,
           { opacity: 0, y: 20 },
@@ -2259,6 +2281,10 @@
             bc.removeEventListener('scroll', page._genCtaScrollHandler);
           }
           delete page._genCtaScrollHandler;
+          if (page._genLangChangeHandler) {
+            document.removeEventListener('jingeros:lang-change', page._genLangChangeHandler);
+            delete page._genLangChangeHandler;
+          }
           const lb = document.querySelector('#gen-lightbox');
           const lbImg = document.querySelector('#gen-lightbox-img');
           if (lb) {
@@ -2360,6 +2386,33 @@
           bc.addEventListener('scroll', checkSections, { passive: true });
           requestAnimationFrame(checkSections);
         }
+
+        const onLangChange = () => {
+          if (!document.querySelector('.gen-page')) return;
+          sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const rootRect = bc.getBoundingClientRect();
+            if (rect.top < rootRect.bottom - 60 && rect.bottom > rootRect.top + 40) {
+              revealSection(section);
+            }
+          });
+          page.querySelectorAll('.gen-section-header').forEach(header => {
+            const rect = header.getBoundingClientRect();
+            const rootRect = bc.getBoundingClientRect();
+            if (rect.top < rootRect.bottom - 40 && rect.bottom > rootRect.top) {
+              this._genVisibleSectionLabels(header).forEach((label, idx) => {
+                if (parseFloat(getComputedStyle(label).opacity) > 0.5) return;
+                gsap.delayedCall(idx * 0.12, () => this._playGenInkReveal(label));
+              });
+            }
+          });
+          this._syncGenCtaIfVisible(page, bc);
+        };
+        if (page._genLangChangeHandler) {
+          document.removeEventListener('jingeros:lang-change', page._genLangChangeHandler);
+        }
+        page._genLangChangeHandler = onLangChange;
+        document.addEventListener('jingeros:lang-change', onLangChange);
       }
     }
 
