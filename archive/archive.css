@@ -10,6 +10,23 @@
   src: url('../projects/remoire/Baby Doll.otf') format('opentype');
   font-display: swap;
 }
+@font-face {
+  font-family: 'AMORIA';
+  src: url('../projects/generator/AMORIA.otf') format('opentype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Philosopher';
+  src: url('../projects/generator/Philosopher-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'LXGWWenKai';
+  src: url('../projects/generator/LXGWWenKai-Regular.ttf') format('truetype');
+  font-display: swap;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════
    VHS ARCHIVE EXPERIENCE — STYLES
@@ -999,6 +1016,7 @@ body.archive-active .pixel-pet-container {
 
 .browser-content {
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   background: #fff;
   position: relative;
@@ -3356,6 +3374,12 @@ body.archive-active .pixel-pet-container {
 .gen-page {
   position: relative;
   min-height: 100%;
+  isolation: isolate;
+}
+
+.gen-page > :not(.gen-paper-texture):not(.gen-grain-canvas):not(.gen-svg-filters):not(.gen-cursor) {
+  position: relative;
+  z-index: 2;
 }
 
 .generator-theme {
@@ -3370,14 +3394,63 @@ body.archive-active .pixel-pet-container {
   --gen-cream: #FFF8EE;
   --gen-shadow: 0 4px 24px rgba(44, 30, 16, 0.06);
   --gen-shadow-hover: 0 12px 40px rgba(44, 30, 16, 0.12);
-  --gen-font-display: 'Playfair Display', 'Young Serif', Georgia, serif;
-  --gen-font-body: 'LXGW WenKai', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
-  --gen-font-brand: 'Dancing Script', cursive;
-  --gen-font-zh-title: 'ZCOOL XiaoWei', 'LXGW WenKai', serif;
+  --gen-font-display: 'Curly', 'Playfair Display', Georgia, serif;
+  --gen-font-body: 'Philosopher', 'LXGW WenKai Local', system-ui, -apple-system, sans-serif;
+  --gen-font-brand: 'Curly', cursive;
+  --gen-font-sub: 'AMORIA', 'Playfair Display', serif;
+  --gen-font-zh-title: 'LXGWWenKai', 'LXGW WenKai Local', serif;
+  --gen-font-zh-body: 'LXGW WenKai Local', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
 
   background: var(--gen-bg);
   color: var(--gen-text);
   font-family: var(--gen-font-body);
+}
+
+/* Language-specific font application for generator */
+.gen-page .lang-en { font-family: var(--gen-font-body); }
+.gen-page .lang-zh { font-family: var(--gen-font-zh-body); }
+.gen-page .gen-logo-text { font-family: var(--gen-font-display); }
+.gen-page h2.lang-en, .gen-page h3.lang-en, .gen-page h4.lang-en,
+.gen-page .gen-section-label.lang-en,
+.gen-page .gen-cta-title.lang-en { font-family: var(--gen-font-sub); }
+.gen-page h1.lang-zh, .gen-page h2.lang-zh, .gen-page h3.lang-zh, .gen-page h4.lang-zh,
+.gen-page .gen-section-label.lang-zh, .gen-page .gen-cta-title.lang-zh { font-family: var(--gen-font-zh-title); }
+
+/* English body copy → Philosopher */
+.gen-page p.lang-en,
+.gen-page .gen-hero-sub.lang-en,
+.gen-page .gen-cta-sub.lang-en,
+.gen-page .gen-stat-label.lang-en,
+.gen-page .gen-stat-value.lang-en,
+.gen-page .gen-flow-body p.lang-en,
+.gen-page .gen-layout-text p.lang-en,
+.gen-page .gen-feature-text p.lang-en,
+.gen-page .gen-tech-highlight p.lang-en {
+  font-family: var(--gen-font-body);
+}
+
+/* Generator bilingual: Chinese mode = show both zh + en */
+.gen-page .lang-zh,
+.gen-page .lang-en {
+  display: block;
+}
+
+.gen-page span.lang-zh,
+.gen-page span.lang-en {
+  display: block;
+}
+
+/* English mode: generator shows English only */
+body.lang-en .gen-page .lang-zh {
+  display: none !important;
+}
+
+body.lang-en .gen-page .lang-en {
+  display: block;
+}
+
+body.lang-en .gen-page span.lang-en {
+  display: block;
 }
 
 .generator-theme .project-subnav {
@@ -3496,27 +3569,30 @@ body.archive-active .pixel-pet-container {
 
 .gen-hero-row {
   display: flex;
-  gap: 48px;
-  align-items: center;
-  justify-content: space-between;
+  gap: 60px;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: visible;
 }
 
 .gen-hero-content {
   flex: 1;
   min-width: 0;
+  max-width: 480px;
 }
 
 .gen-hero-logo {
-  font-family: var(--gen-font-brand);
+  font-family: var(--gen-font-display);
   font-size: clamp(40px, 6vw, 64px);
   font-weight: 400;
   line-height: 1.15;
   color: var(--gen-accent);
   margin: 0 0 28px;
+  white-space: nowrap;
 }
 
 .gen-logo-text {
-  display: block;
+  display: inline;
 }
 
 .gen-hero-sub {
@@ -3550,7 +3626,10 @@ body.archive-active .pixel-pet-container {
 }
 
 .gen-stat-icon {
-  font-size: 18px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--gen-accent);
   margin-bottom: 4px;
 }
 
@@ -3573,13 +3652,45 @@ body.archive-active .pixel-pet-container {
 
 .gen-paper-texture {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 100%;
   pointer-events: none;
-  z-index: 0;
-  opacity: 0.12;
+  z-index: 1;
+  opacity: 0.22;
+  background-color: var(--gen-bg);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E");
   background-repeat: repeat;
-  filter: contrast(1.5);
+  filter: contrast(1.4) brightness(1.05);
+  mix-blend-mode: multiply;
+}
+
+.gen-grain-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+.gen-page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(255, 253, 245, 0.15) 0%, rgba(249, 243, 232, 0.25) 100%);
+  backdrop-filter: blur(0.4px);
+  -webkit-backdrop-filter: blur(0.4px);
 }
 
 /* ─── Custom Cursor ──────────────────────────────────────────────── */
@@ -3602,11 +3713,11 @@ body.archive-active .pixel-pet-container {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1.5px solid var(--gen-accent);
+  border: 1.5px solid #C4613A;
   pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
+  z-index: 10050;
   opacity: 0;
+  will-change: transform;
   transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.15s ease;
 }
 
@@ -3618,7 +3729,7 @@ body.archive-active .pixel-pet-container {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--gen-accent);
+  background: #C4613A;
   transform: translate(-50%, -50%);
 }
 
@@ -3637,30 +3748,35 @@ body.archive-active .pixel-pet-container {
 .gen-hero-cards {
   flex: 0 0 auto;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  margin-right: 5%;
+  margin-right: 0;
+  margin-top: 0;
+  overflow: visible;
 }
 
 .gen-card-stack {
   position: relative;
-  width: 340px;
-  height: 360px;
+  width: 500px;
+  height: 300px;
   cursor: pointer;
+  margin-top: 14px;
+  overflow: visible;
 }
 
 .gen-stack-card {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 0;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background: none;
   border: none;
   padding: 0;
   outline: none;
-  will-change: transform;
+  will-change: transform, opacity;
+  transform-origin: center top;
 }
 
 .gen-stack-card img {
@@ -3678,41 +3794,30 @@ body.archive-active .pixel-pet-container {
 .gen-stack-card[data-index="3"] { z-index: 3; }
 .gen-stack-card[data-index="4"] { z-index: 4; }
 
-/* ─── Lightbox ───────────────────────────────────────────────────── */
+/* ─── Lightbox (omou-style expand from card) ─────────────────────── */
 
 .gen-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 253, 245, 0.92);
+  z-index: 10000;
+  background: rgba(255, 253, 245, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s ease;
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='10' y1='10' x2='22' y2='22' stroke='%23C4613A' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='22' y1='10' x2='10' y2='22' stroke='%23C4613A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") 16 16, pointer;
+  cursor: zoom-out;
+  will-change: opacity;
 }
 
 .gen-lightbox.active {
-  opacity: 1;
   pointer-events: auto;
 }
 
 .gen-lightbox-img {
-  max-width: 85vw;
-  max-height: 85vh;
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 24px 80px rgba(44, 30, 16, 0.2);
-  transform: scale(0.85);
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-.gen-lightbox.active .gen-lightbox-img {
-  transform: scale(1);
+  border-radius: 6px;
+  box-shadow: 0 24px 80px rgba(44, 30, 16, 0.22);
+  pointer-events: none;
 }
 
 /* ─── Steps Grid (new How It Works) ──────────────────────────────── */
@@ -3726,6 +3831,9 @@ body.archive-active .pixel-pet-container {
 .gen-section-header {
   margin-bottom: 100px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .gen-section-label {
@@ -3734,8 +3842,18 @@ body.archive-active .pixel-pet-container {
   font-weight: 400;
   color: var(--gen-accent);
   letter-spacing: -0.02em;
-  display: inline-block;
-  will-change: transform;
+  display: block;
+  will-change: filter, opacity;
+}
+
+/* Section titles: Chinese mode = zh + en on separate lines */
+.gen-page .gen-section-header .lang-zh,
+.gen-page .gen-section-header .lang-en {
+  display: block;
+}
+
+body.lang-en .gen-page .gen-section-header .lang-zh {
+  display: none !important;
 }
 
 /* ─── STEPS (How It Works) ──────────────────────────────────────────── */
@@ -3900,7 +4018,7 @@ body.archive-active .pixel-pet-container {
 }
 
 .gen-layout-text h3 {
-  font-family: var(--gen-font-display);
+  font-family: var(--gen-font-sub);
   font-size: 28px;
   font-weight: 400;
   margin: 0 0 12px;
@@ -4066,10 +4184,15 @@ body.archive-active .pixel-pet-container {
   font-size: clamp(40px, 6vw, 72px);
   font-weight: 400;
   margin: 0 0 16px;
-  color: var(--gen-text);
+  color: var(--gen-accent);
   letter-spacing: -0.02em;
+  display: block;
+  overflow: hidden;
+}
+
+.gen-cta-char {
   display: inline-block;
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 .gen-cta-sub {
@@ -4127,8 +4250,8 @@ body.archive-active .pixel-pet-container {
   }
 
   .gen-card-stack {
-    width: 280px;
-    height: 300px;
+    width: 360px;
+    height: 240px;
   }
 
   .gen-stack-card img {

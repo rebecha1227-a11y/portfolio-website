@@ -756,6 +756,10 @@
 
     /* ─── BROWSER OPEN ──────────────────────────────────────────────── */
     _openBrowser(projectId) {
+      if (this.currentProject === 'generator' && projectId !== 'generator') {
+        document.dispatchEvent(new Event('jingeros:generator-cleanup'));
+      }
+
       this.state = STATES.BROWSING;
       this.currentProject = projectId;
 
@@ -798,7 +802,7 @@
       );
       tl.fromTo('.browser-content',
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', clearProps: 'transform' },
         '-=0.1'
       );
 
@@ -1577,9 +1581,377 @@
     }
 
     /* ─── GENERATOR PAGE ANIMATIONS ───────────────────────────────────── */
+    _genKillDelayedCalls(page, key) {
+      const list = page[key];
+      if (!list) return;
+      list.forEach(c => c.kill());
+      list.length = 0;
+    }
+
+    _genVisibleSectionLabels(header) {
+      const isEn = document.body.classList.contains('lang-en');
+      return [...header.querySelectorAll('.gen-section-label')].filter(el => {
+        if (isEn) return el.classList.contains('lang-en');
+        return el.classList.contains('lang-zh') || el.classList.contains('lang-en');
+      });
+    }
+
+    _genVisibleCtaTitles(page) {
+      const isEn = document.body.classList.contains('lang-en');
+      return [...page.querySelectorAll('.gen-cta-title')].filter(t => {
+        if (isEn) return t.classList.contains('lang-en');
+        return t.classList.contains('lang-zh') || t.classList.contains('lang-en');
+      });
+    }
+
+    _playGenCtaLetterReveal(titleEl) {
+      const chars = titleEl.querySelectorAll('.gen-cta-char');
+      if (!chars.length) return;
+      gsap.to(chars, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.1,
+        ease: 'power1.out',
+      });
+    }
+
+    _prepareGenCtaTitles(page) {
+      page.querySelectorAll('.gen-cta-title').forEach(title => {
+        if (title.dataset.genSplit) return;
+        const text = title.textContent.trim();
+        title.textContent = '';
+        title.dataset.genSplit = '1';
+        [...text].forEach(ch => {
+          const span = document.createElement('span');
+          span.className = 'gen-cta-char';
+          span.textContent = ch === ' ' ? '\u00a0' : ch;
+          title.appendChild(span);
+        });
+        gsap.set(title, { opacity: 1 });
+        gsap.set(title.querySelectorAll('.gen-cta-char'), { yPercent: 100, opacity: 0 });
+      });
+    }
+
+    _initGenSectionInkReveal(page, bc) {
+      if (typeof ScrollTrigger === 'undefined') return;
+      page._genInkDelayed = page._genInkDelayed || [];
+
+      page.querySelectorAll('.gen-section-header').forEach(header => {
+        const resetLabels = () => {
+          this._genKillDelayedCalls(page, '_genInkDelayed');
+          this._genVisibleSectionLabels(header).forEach(label => {
+            gsap.killTweensOf(label);
+            label.style.filter = 'none';
+            gsap.set(label, { opacity: 0, yPercent: 0 });
+            delete label.dataset.genInkDone;
+          });
+        };
+
+        const playLabels = () => {
+          const labels = this._genVisibleSectionLabels(header);
+          if (!labels.length) return;
+
+          this._genKillDelayedCalls(page, '_genInkDelayed');
+          labels.forEach((label, idx) => {
+            if (label.dataset.genInkDone === '1' && parseFloat(getComputedStyle(label).opacity) > 0.5) {
+              return;
+            }
+            const call = gsap.delayedCall(idx * 0.18, () => {
+              label.dataset.genInkDone = '1';
+              this._playGenInkReveal(label);
+            });
+            page._genInkDelayed.push(call);
+          });
+        };
+
+        const st = ScrollTrigger.create({
+          trigger: header,
+          scroller: bc,
+          start: 'top 85%',
+          onEnter: playLabels,
+          onEnterBack: playLabels,
+          onLeaveBack: resetLabels,
+        });
+        page._genScrollTriggers.push(st);
+      });
+    }
+
+    _initGenCtaScrollReveal(page, bc) {
+      const ctaBlock = page.querySelector('.gen-final-cta');
+      if (!ctaBlock || typeof ScrollTrigger === 'undefined') return;
+      page._genCtaDelayed = page._genCtaDelayed || [];
+
+      const resetCtaTitles = () => {
+        this._genKillDelayedCalls(page, '_genCtaDelayed');
+        this._genVisibleCtaTitles(page).forEach(title => {
+          const chars = title.querySelectorAll('.gen-cta-char');
+          gsap.killTweensOf(chars);
+          gsap.set(chars, { yPercent: 100, opacity: 0 });
+          delete title.dataset.genCtaPlayed;
+        });
+      };
+
+      const playCtaTitles = () => {
+        const titles = this._genVisibleCtaTitles(page);
+        if (!titles.length) return;
+
+        this._genKillDelayedCalls(page, '_genCtaDelayed');
+        titles.forEach((title, idx) => {
+          const call = gsap.delayedCall(idx * 0.35, () => {
+            const chars = title.querySelectorAll('.gen-cta-char');
+            gsap.killTweensOf(chars);
+            gsap.set(chars, { yPercent: 100, opacity: 0 });
+            this._playGenCtaLetterReveal(title);
+            title.dataset.genCtaPlayed = '1';
+          });
+          page._genCtaDelayed.push(call);
+        });
+      };
+
+      const st = ScrollTrigger.create({
+        trigger: ctaBlock,
+        scroller: bc,
+        start: 'top 88%',
+        onEnter: playCtaTitles,
+        onEnterBack: playCtaTitles,
+        onLeaveBack: resetCtaTitles,
+      });
+      page._genScrollTriggers.push(st);
+    }
+
+    _playGenInkReveal(el) {
+      const disp = document.getElementById('gen-ink-disp');
+      const blur = document.getElementById('gen-ink-blur');
+      if (!el) return;
+      if (!disp || !blur) {
+        gsap.to(el, { opacity: 1, yPercent: 0, duration: 1.2, ease: 'power4.out' });
+        return;
+      }
+
+      disp.setAttribute('scale', '70');
+      blur.setAttribute('stdDeviation', '10');
+      el.style.filter = 'url(#genInkFilter)';
+      gsap.set(el, { opacity: 0, yPercent: 0 });
+
+      const state = { scale: 70, blur: 10 };
+      gsap.timeline()
+        .to(el, { opacity: 1, duration: 0.2, ease: 'power2.out' })
+        .to(state, {
+          scale: 0,
+          blur: 0,
+          duration: 1.8,
+          ease: 'power3.out',
+          onUpdate: () => {
+            disp.setAttribute('scale', String(state.scale));
+            blur.setAttribute('stdDeviation', String(state.blur));
+          },
+          onComplete: () => {
+            el.style.filter = 'none';
+          }
+        }, 0);
+    }
+
+    _openGenCardZoom(card, img, lightbox, lightboxImg, stackCards) {
+      if (lightbox.classList.contains('active')) return;
+
+      const rect = img.getBoundingClientRect();
+      const aspect = (img.naturalWidth && img.naturalHeight)
+        ? img.naturalWidth / img.naturalHeight
+        : rect.width / rect.height;
+      let targetW = Math.min(rect.width * 2.8, window.innerWidth * 0.76);
+      let targetH = targetW / aspect;
+      const maxH = window.innerHeight * 0.82;
+      if (targetH > maxH) {
+        targetH = maxH;
+        targetW = targetH * aspect;
+      }
+      const targetLeft = (window.innerWidth - targetW) / 2;
+      const targetTop = (window.innerHeight - targetH) / 2;
+
+      if (lightbox.parentNode !== document.body) {
+        document.body.appendChild(lightbox);
+      }
+
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.dataset.zoomCard = card.dataset.index || '0';
+      delete lightbox.dataset.zoomClosing;
+      lightbox.classList.add('active');
+
+      gsap.killTweensOf([lightbox, lightboxImg]);
+      gsap.set(lightbox, { autoAlpha: 0 });
+      gsap.to(lightbox, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' });
+      gsap.set(lightboxImg, {
+        position: 'fixed',
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+        maxWidth: 'none',
+        maxHeight: 'none',
+        margin: 0,
+        x: 0,
+        y: 0,
+        scale: 1,
+        rotation: gsap.getProperty(card, 'rotation') || 0,
+        transformOrigin: 'center center',
+        opacity: 1,
+        visibility: 'visible',
+        zIndex: 10001,
+      });
+      gsap.set(img, { opacity: 0 });
+
+      stackCards.forEach(c => {
+        gsap.to(c, { opacity: c === card ? 1 : 0.2, duration: 0.35, ease: 'power2.out' });
+      });
+
+      gsap.to(lightboxImg, {
+        top: targetTop,
+        left: targetLeft,
+        width: targetW,
+        height: targetH,
+        rotation: 0,
+        duration: 0.48,
+        ease: 'power3.inOut',
+      });
+    }
+
+    _closeGenCardZoom(lightbox, lightboxImg, stackCards) {
+      if (!lightbox.classList.contains('active') || lightbox.dataset.zoomClosing === '1') return;
+      lightbox.dataset.zoomClosing = '1';
+      lightbox.style.pointerEvents = 'none';
+
+      const cardIdx = lightbox.dataset.zoomCard;
+      const card = [...stackCards].find(c => c.dataset.index === cardIdx) || stackCards[0];
+      const img = card?.querySelector('img');
+      if (!img) {
+        lightbox.classList.remove('active');
+        lightbox.style.pointerEvents = '';
+        delete lightbox.dataset.zoomClosing;
+        return;
+      }
+
+      const rect = img.getBoundingClientRect();
+      gsap.killTweensOf([lightboxImg, lightbox]);
+
+      stackCards.forEach(c => {
+        gsap.to(c, { opacity: 1, duration: 0.35, ease: 'power2.out' });
+      });
+
+      gsap.timeline({
+        defaults: { ease: 'power3.inOut' },
+        onComplete: () => {
+          gsap.set(lightboxImg, { autoAlpha: 0 });
+          gsap.set(img, { opacity: 1 });
+          gsap.set(lightboxImg, { clearProps: 'all' });
+          lightbox.classList.remove('active');
+          gsap.set(lightbox, { autoAlpha: 0 });
+          lightbox.style.pointerEvents = '';
+          delete lightbox.dataset.zoomClosing;
+        },
+      })
+        .to(lightbox, { autoAlpha: 0, duration: 0.34, ease: 'power2.inOut' }, 0)
+        .to(lightboxImg, {
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+          rotation: gsap.getProperty(card, 'rotation') || 0,
+          duration: 0.42,
+        }, 0);
+    }
+
+    _initGenGrainCanvas(page) {
+      const canvas = page.querySelector('#gen-grain-canvas');
+      if (!canvas) return null;
+
+      const bc = page.closest('.browser-content');
+
+      const ctx = canvas.getContext('2d');
+      const off = document.createElement('canvas');
+      const offCtx = off.getContext('2d');
+      let rafId = null;
+      let last = 0;
+      let imgData = null;
+      let buf = null;
+      let resizeTimer = null;
+
+      const getSettings = () => ({
+        interval: window.innerWidth >= 1024 ? 10 : 40,
+        alpha: window.innerWidth >= 1024 ? 0.1 : 0.07,
+      });
+
+      const resize = () => {
+        const w = page.clientWidth || window.innerWidth;
+        const h = Math.max(page.scrollHeight, page.offsetHeight, page.clientHeight);
+        if (!w || !h) return;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+          off.width = w;
+          off.height = h;
+          imgData = offCtx.createImageData(w, h);
+          buf = imgData.data;
+        }
+      };
+
+      const scheduleResize = () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 80);
+      };
+
+      const draw = (now) => {
+        rafId = requestAnimationFrame(draw);
+        const { interval, alpha } = getSettings();
+        if (now - last < interval || !buf) return;
+        last = now;
+        const total = buf.length / 4;
+        const count = Math.floor(total * 0.02);
+        for (let i = 0; i < count; i++) {
+          const px = Math.floor(Math.random() * total) * 4;
+          buf[px + 3] = Math.random() * 255 * alpha;
+        }
+        offCtx.putImageData(imgData, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(off, 0, 0);
+      };
+
+      const onResize = () => scheduleResize();
+
+      resize();
+      window.addEventListener('resize', onResize);
+      const resizeObserver = typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => scheduleResize())
+        : null;
+      if (resizeObserver) resizeObserver.observe(page);
+      page.querySelectorAll('img').forEach(img => {
+        if (!img.complete) img.addEventListener('load', scheduleResize, { once: true });
+      });
+      if (bc) bc.addEventListener('scroll', scheduleResize, { passive: true });
+      setTimeout(scheduleResize, 400);
+      setTimeout(scheduleResize, 1200);
+      rafId = requestAnimationFrame(draw);
+
+      return () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        window.removeEventListener('resize', onResize);
+        if (resizeObserver) resizeObserver.disconnect();
+        if (bc) bc.removeEventListener('scroll', scheduleResize);
+        clearTimeout(resizeTimer);
+      };
+    }
+
     _initGeneratorAnimations() {
       const page = document.querySelector('.gen-page');
       if (!page) return;
+
+      const bc = page.closest('.browser-content');
+
+      if (page._genGrainCleanup) page._genGrainCleanup();
+      page._genGrainCleanup = this._initGenGrainCanvas(page);
 
       const subnav = document.querySelector('#project-subnav');
       if (subnav) {
@@ -1597,14 +1969,16 @@
             subnav.querySelectorAll('a').forEach(x => x.classList.remove('active'));
             a.classList.add('active');
             const target = page.querySelector(`#section-${sectionId}`);
-            if (target) {
-              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (target && bc) {
+              const rootRect = bc.getBoundingClientRect();
+              const targetRect = target.getBoundingClientRect();
+              const top = bc.scrollTop + targetRect.top - rootRect.top - 24;
+              bc.scrollTo({ top, behavior: 'smooth' });
             }
           });
         });
       }
 
-      const bc = page.closest('.browser-content');
       if (bc && subnav) {
         const sectionIds = ['about', 'features', 'tech', 'gallery', 'github'];
         bc.addEventListener('scroll', () => {
@@ -1658,42 +2032,52 @@
       const stackCards = page.querySelectorAll('.gen-stack-card');
       if (cardStack && stackCards.length) {
         const defaultTransforms = [
-          { x: -30, rotation: -9, y: 0 },
-          { x: -15, rotation: -5, y: 0 },
-          { x: 0,   rotation: 0,  y: 0 },
-          { x: 15,  rotation: 5,  y: 0 },
-          { x: 30,  rotation: 9,  y: 0 },
+          { xPercent: -50, x: -30, rotation: -9, y: 0 },
+          { xPercent: -50, x: -15, rotation: -5, y: 0 },
+          { xPercent: -50, x: 0,   rotation: 0,  y: 0 },
+          { xPercent: -50, x: 15,  rotation: 5,  y: 0 },
+          { xPercent: -50, x: 30,  rotation: 9,  y: 0 },
         ];
         const spreadTransforms = [
-          { x: -120, rotation: -18, y: 10 },
-          { x: -60,  rotation: -9,  y: -8 },
-          { x: 0,    rotation: 0,   y: -12 },
-          { x: 60,   rotation: 9,   y: -8 },
-          { x: 120,  rotation: 18,  y: 10 },
+          { xPercent: -50, x: -168, rotation: -24, y: 16 },
+          { xPercent: -50, x: -84,  rotation: -12, y: -12 },
+          { xPercent: -50, x: 0,    rotation: 0,   y: -18 },
+          { xPercent: -50, x: 84,   rotation: 12,  y: -12 },
+          { xPercent: -50, x: 168,  rotation: 24,  y: 16 },
         ];
 
-        gsap.fromTo(stackCards,
-          { opacity: 0, scale: 0.7 },
-          { opacity: 1, scale: 1, duration: 0.5, stagger: 0.06, delay: 0.3, ease: 'power2.out',
-            onComplete: () => {
-              stackCards.forEach((card, i) => {
-                const d = defaultTransforms[i] || defaultTransforms[2];
-                gsap.set(card, { x: d.x, y: d.y, rotation: d.rotation, scale: 1 });
-              });
-            }
-          }
-        );
+        gsap.killTweensOf(stackCards);
+        const cardTl = gsap.timeline({ delay: 0.45 });
+        stackCards.forEach((card, i) => {
+          const d = defaultTransforms[i] || defaultTransforms[2];
+          gsap.set(card, {
+            xPercent: d.xPercent,
+            x: d.x,
+            y: d.y + 28,
+            rotation: d.rotation,
+            scale: 0.94,
+            opacity: 0,
+            force3D: true,
+          });
+          cardTl.to(card, {
+            opacity: 1,
+            y: d.y,
+            scale: 1,
+            duration: 0.75,
+            ease: 'power3.out',
+          }, i * 0.08);
+        });
 
         cardStack.addEventListener('mouseenter', () => {
           stackCards.forEach((card, i) => {
             const s = spreadTransforms[i] || spreadTransforms[2];
-            gsap.to(card, { x: s.x, y: s.y, rotation: s.rotation, duration: 0.38, ease: 'power2.out' });
+            gsap.to(card, { xPercent: s.xPercent, x: s.x, y: s.y, rotation: s.rotation, duration: 0.44, ease: 'power3.out' });
           });
         });
         cardStack.addEventListener('mouseleave', () => {
           stackCards.forEach((card, i) => {
             const d = defaultTransforms[i] || defaultTransforms[2];
-            gsap.to(card, { x: d.x, y: d.y, rotation: d.rotation, duration: 0.38, ease: 'power2.out' });
+            gsap.to(card, { xPercent: d.xPercent, x: d.x, y: d.y, rotation: d.rotation, duration: 0.4, ease: 'power3.inOut' });
           });
         });
 
@@ -1701,45 +2085,57 @@
         const lightboxImg = page.querySelector('#gen-lightbox-img');
         if (lightbox && lightboxImg) {
           stackCards.forEach(card => {
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+              e.stopPropagation();
               const img = card.querySelector('img');
-              if (img) {
-                lightboxImg.src = img.src;
-                lightboxImg.alt = img.alt;
-                lightbox.classList.add('active');
-              }
+              if (img) this._openGenCardZoom(card, img, lightbox, lightboxImg, stackCards);
             });
           });
           lightbox.addEventListener('click', () => {
-            lightbox.classList.remove('active');
+            this._closeGenCardZoom(lightbox, lightboxImg, stackCards);
           });
         }
       }
 
       // Custom cursor with smooth trailing
-      const cursor = page.querySelector('#gen-cursor');
+      // Remove any stale cursor from previous visits
+      document.querySelectorAll('#gen-cursor').forEach(c => c.remove());
+      const cursor = page.querySelector('#gen-cursor') || (() => {
+        const c = document.createElement('div');
+        c.className = 'gen-cursor';
+        c.id = 'gen-cursor';
+        return c;
+      })();
       if (cursor && bc) {
         document.body.appendChild(cursor);
+        gsap.set(cursor, { x: 0, y: 0, force3D: true });
 
-        let cursorX = 0, cursorY = 0, targetX = 0, targetY = 0;
         let cursorVisible = false;
-        const lerp = (a, b, n) => a + (b - a) * n;
+        const cursorXTo = gsap.quickTo(cursor, 'x', { duration: 0.14, ease: 'power3.out' });
+        const cursorYTo = gsap.quickTo(cursor, 'y', { duration: 0.14, ease: 'power3.out' });
 
-        bc.addEventListener('mousemove', (e) => {
-          targetX = e.clientX;
-          targetY = e.clientY;
-          if (!cursorVisible) {
-            cursorX = targetX;
-            cursorY = targetY;
-            cursorVisible = true;
-            cursor.classList.add('visible');
+        function isInsideBC(clientX, clientY) {
+          const r = bc.getBoundingClientRect();
+          return clientX >= r.left && clientX <= r.right &&
+                 clientY >= r.top && clientY <= r.bottom;
+        }
+
+        function onMouseMove(e) {
+          if (isInsideBC(e.clientX, e.clientY)) {
+            if (!cursorVisible) {
+              gsap.set(cursor, { x: e.clientX - 20, y: e.clientY - 20 });
+              cursorVisible = true;
+              cursor.classList.add('visible');
+            }
+            cursorXTo(e.clientX - 20);
+            cursorYTo(e.clientY - 20);
+          } else if (cursorVisible) {
+            cursorVisible = false;
+            cursor.classList.remove('visible');
           }
-        });
+        }
 
-        bc.addEventListener('mouseleave', () => {
-          cursorVisible = false;
-          cursor.classList.remove('visible');
-        });
+        document.addEventListener('mousemove', onMouseMove, { passive: true });
 
         const interactives = page.querySelectorAll('a, button, .gen-stack-card');
         interactives.forEach(el => {
@@ -1747,20 +2143,57 @@
           el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
         });
 
-        function animateCursor() {
-          cursorX = lerp(cursorX, targetX, 0.3);
-          cursorY = lerp(cursorY, targetY, 0.3);
-          cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
-          requestAnimationFrame(animateCursor);
-        }
-        animateCursor();
+        const cleanup = () => {
+          document.removeEventListener('mousemove', onMouseMove);
+          cursorXTo.tween?.kill();
+          cursorYTo.tween?.kill();
+          gsap.killTweensOf(cursor);
+          cursor.classList.remove('visible');
+          if (cursor.parentNode) cursor.parentNode.removeChild(cursor);
+          if (page._genScrollTriggers) {
+            page._genScrollTriggers.forEach(st => st.kill());
+            page._genScrollTriggers = [];
+          }
+          if (page._genGrainCleanup) {
+            page._genGrainCleanup();
+            page._genGrainCleanup = null;
+          }
+          this._genKillDelayedCalls(page, '_genInkDelayed');
+          this._genKillDelayedCalls(page, '_genCtaDelayed');
+          const lb = document.querySelector('#gen-lightbox');
+          const lbImg = document.querySelector('#gen-lightbox-img');
+          if (lb) {
+            gsap.killTweensOf([lb, lbImg]);
+            lb.classList.remove('active');
+            delete lb.dataset.zoomClosing;
+            lb.style.pointerEvents = '';
+            if (lbImg) {
+              gsap.set(lbImg, { clearProps: 'all' });
+            }
+            gsap.set(lb, { autoAlpha: 0 });
+            page.querySelectorAll('.gen-stack-card img').forEach(im => gsap.set(im, { opacity: 1 }));
+            const genPage = document.querySelector('.gen-page');
+            if (genPage && lb.parentNode === document.body) {
+              genPage.insertBefore(lb, genPage.firstChild);
+            }
+          }
+          document.removeEventListener('jingeros:generator-cleanup', cleanup);
+        };
+        document.addEventListener('jingeros:generator-cleanup', cleanup);
       }
 
       if (bc) {
-        // Section labels — slide-up mask reveal (overflow:hidden on parent)
+        // Kill stale ScrollTriggers from previous visits
+        if (page._genScrollTriggers) {
+          page._genScrollTriggers.forEach(st => st.kill());
+        }
+        page._genScrollTriggers = [];
+
+        this._prepareGenCtaTitles(page);
+
         const sectionLabels = page.querySelectorAll('.gen-section-label');
         sectionLabels.forEach(label => {
-          gsap.set(label, { yPercent: 120, opacity: 0 });
+          gsap.set(label, { opacity: 0, yPercent: 0 });
         });
 
         const steps = page.querySelectorAll('.gen-flow-step, .gen-layout-row, .gen-feature, .gen-tech-highlight');
@@ -1773,35 +2206,68 @@
           gsap.set(pill, { opacity: 0, scale: 0.8 });
         });
 
-        const ctaTitles = page.querySelectorAll('.gen-cta-title');
-        ctaTitles.forEach(t => gsap.set(t, { yPercent: 120, opacity: 0 }));
+        const revealSection = (section) => {
+          if (section.dataset.genRevealed) return;
+          section.dataset.genRevealed = '1';
 
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const el = entry.target;
-              if (el.classList.contains('gen-section-label') || el.classList.contains('gen-cta-title')) {
-                gsap.to(el, { opacity: 1, yPercent: 0, duration: 1.2, ease: 'power4.out' });
-              } else if (el.classList.contains('gen-pill')) {
-                gsap.to(el, { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)' });
-              } else {
-                gsap.to(el, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
-              }
-              observer.unobserve(el);
-            }
+          section.querySelectorAll('.gen-flow-step, .gen-layout-row, .gen-feature, .gen-tech-highlight').forEach((step, idx) => {
+            gsap.to(step, { opacity: 1, y: 0, duration: 0.6, delay: idx * 0.08, ease: 'power2.out' });
           });
-        }, { root: bc, threshold: 0.15 });
 
-        sectionLabels.forEach(l => observer.observe(l));
-        steps.forEach(s => observer.observe(s));
-        pills.forEach(p => observer.observe(p));
-        ctaTitles.forEach(t => observer.observe(t));
+          section.querySelectorAll('.gen-pill').forEach((pill, idx) => {
+            gsap.to(pill, { opacity: 1, scale: 1, duration: 0.4, delay: idx * 0.04, ease: 'back.out(1.5)' });
+          });
+        };
+
+        const sections = page.querySelectorAll('.gen-section');
+        if (typeof ScrollTrigger !== 'undefined') {
+          sections.forEach(section => {
+            const st = ScrollTrigger.create({
+              trigger: section,
+              scroller: bc,
+              start: 'top 82%',
+              once: true,
+              onEnter: () => revealSection(section),
+            });
+            page._genScrollTriggers.push(st);
+          });
+          ScrollTrigger.refresh();
+          this._initGenSectionInkReveal(page, bc);
+          this._initGenCtaScrollReveal(page, bc);
+          ScrollTrigger.refresh();
+          requestAnimationFrame(() => {
+            ScrollTrigger.refresh();
+            sections.forEach(section => {
+              const rect = section.getBoundingClientRect();
+              const rootRect = bc.getBoundingClientRect();
+              if (rect.top < rootRect.bottom - 60 && rect.bottom > rootRect.top + 40) {
+                revealSection(section);
+              }
+            });
+          });
+        } else {
+          const checkSections = () => {
+            const rootRect = bc.getBoundingClientRect();
+            sections.forEach(section => {
+              if (section.dataset.genRevealed) return;
+              const rect = section.getBoundingClientRect();
+              if (rect.top < rootRect.bottom - 80 && rect.bottom > rootRect.top + 40) {
+                revealSection(section);
+              }
+            });
+          };
+          bc.addEventListener('scroll', checkSections, { passive: true });
+          requestAnimationFrame(checkSections);
+        }
       }
     }
 
     /* ─── RETURN TO ARCHIVE ─────────────────────────────────────────── */
     _returnToArchive() {
       if (this.state !== STATES.BROWSING) return;
+      if (this.currentProject === 'generator') {
+        document.dispatchEvent(new Event('jingeros:generator-cleanup'));
+      }
       this.state = STATES.RETURNING;
       if (this.audio) this.audio.play('crt-power-off');
 

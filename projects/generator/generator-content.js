@@ -5,17 +5,15 @@
     <div class="gen-page">
 
       <svg class="gen-svg-filters" xmlns="http://www.w3.org/2000/svg" width="0" height="0">
-        <filter id="genInkFilter">
-          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" result="displaced"/>
-          <feGaussianBlur in="displaced" stdDeviation="0.2"/>
-        </filter>
-        <filter id="genPaperGrain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="5" stitchTiles="stitch" result="grain"/>
-          <feColorMatrix type="saturate" values="0" in="grain" result="desaturated"/>
-          <feBlend in="SourceGraphic" in2="desaturated" mode="multiply" result="blended"/>
+        <filter id="genInkFilter" x="-25%" y="-50%" width="150%" height="200%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="5" result="n"></feTurbulence>
+          <feDisplacementMap id="gen-ink-disp" in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G" result="d"></feDisplacementMap>
+          <feGaussianBlur id="gen-ink-blur" in="d" stdDeviation="10"></feGaussianBlur>
         </filter>
       </svg>
+
+      <!-- Animated film grain (ref: kaiseisadatoki) -->
+      <canvas class="gen-grain-canvas" id="gen-grain-canvas" aria-hidden="true"></canvas>
 
       <!-- Paper texture overlay -->
       <div class="gen-paper-texture"></div>
@@ -33,8 +31,7 @@
         <div class="gen-hero-row">
           <div class="gen-hero-content">
             <h1 class="gen-hero-logo" id="gen-title">
-              <span class="gen-logo-text">LittleRedNote</span>
-              <span class="gen-logo-text">Generator</span>
+              <span class="gen-logo-text">LittleRedNote Generator</span>
             </h1>
             <p class="gen-hero-sub lang-zh">灵感 → AI → 成品，一键生成小红书图文。</p>
             <p class="gen-hero-sub lang-en">From idea to polished Xiaohongshu posts in one click.</p>
@@ -44,17 +41,20 @@
             </div>
             <div class="gen-hero-stats">
               <div class="gen-stat">
+                <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
                 <span class="gen-stat-value lang-zh">30 min → 1 min</span>
                 <span class="gen-stat-value lang-en">30 min → 1 min</span>
                 <span class="gen-stat-label lang-zh">效率提升</span>
                 <span class="gen-stat-label lang-en">Efficiency Boost</span>
               </div>
               <div class="gen-stat">
+                <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 <span class="gen-stat-value">3</span>
                 <span class="gen-stat-label lang-zh">创作风格</span>
                 <span class="gen-stat-label lang-en">Writing Styles</span>
               </div>
               <div class="gen-stat">
+                <svg class="gen-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                 <span class="gen-stat-value">5</span>
                 <span class="gen-stat-label lang-zh">卡片布局</span>
                 <span class="gen-stat-label lang-en">Card Layouts</span>
