@@ -1677,10 +1677,66 @@
       });
     }
 
+    _genCtaIsRevealed(page) {
+      const titles = this._genVisibleCtaTitles(page);
+      if (!titles.length) return false;
+      return titles.every(title => {
+        const chars = title.querySelectorAll('.gen-cta-char');
+        return chars.length > 0 && [...chars].every(
+          c => parseFloat(getComputedStyle(c).opacity) > 0.9
+        );
+      });
+    }
+
+    _genCtaVisibleRatio(ctaBlock, bc) {
+      const root = bc.getBoundingClientRect();
+      const rect = ctaBlock.getBoundingClientRect();
+      const overlap = Math.min(rect.bottom, root.bottom) - Math.max(rect.top, root.top);
+      return Math.max(0, overlap) / Math.max(rect.height, 1);
+    }
+
+    _syncGenCtaIfVisible(page, bc) {
+      if (typeof page._genCtaScrollHandler === 'function') {
+        page._genCtaScrollHandler();
+      }
+    }
+
+    _bindGenCtaResizeRefresh(page, bc) {
+      if (page._genCtaResizeBound) return;
+      page._genCtaResizeBound = true;
+      let resizeTimer = null;
+      const refresh = () => {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          resizeTimer = null;
+          const wasNearBottom = bc.scrollTop + bc.clientHeight >= bc.scrollHeight - 200;
+          if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+          if (wasNearBottom) {
+            bc.scrollTop = bc.scrollHeight;
+          }
+          this._syncGenCtaIfVisible(page, bc);
+        }, 80);
+      };
+      window.addEventListener('load', refresh, { once: true });
+      page.querySelectorAll('img').forEach(img => {
+        if (!img.complete) img.addEventListener('load', refresh, { once: true });
+      });
+      if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(refresh);
+        ro.observe(page);
+        if (bc) ro.observe(bc);
+        page._genCtaResizeObserver = ro;
+      }
+    }
+
     _initGenCtaScrollReveal(page, bc) {
       const ctaBlock = page.querySelector('.gen-final-cta');
-      if (!ctaBlock || typeof ScrollTrigger === 'undefined') return;
+      if (!ctaBlock || !bc) return;
       page._genCtaDelayed = page._genCtaDelayed || [];
+
+      if (page._genCtaScrollHandler) {
+        bc.removeEventListener('scroll', page._genCtaScrollHandler);
+      }
 
       const resetCtaTitles = () => {
         this._genKillDelayedCalls(page, '_genCtaDelayed');
@@ -1690,16 +1746,21 @@
           gsap.set(chars, { yPercent: 100, opacity: 0 });
           delete title.dataset.genCtaPlayed;
         });
+        page._genCtaWasVisible = false;
+        page._genCtaPlayRequested = false;
       };
 
       const playCtaTitles = () => {
+        if (this._genCtaIsRevealed(page) || page._genCtaPlayRequested) return;
         const titles = this._genVisibleCtaTitles(page);
         if (!titles.length) return;
 
+        page._genCtaPlayRequested = true;
         this._genKillDelayedCalls(page, '_genCtaDelayed');
         titles.forEach((title, idx) => {
           const call = gsap.delayedCall(idx * 0.35, () => {
             const chars = title.querySelectorAll('.gen-cta-char');
+            if (!chars.length) return;
             gsap.killTweensOf(chars);
             gsap.set(chars, { yPercent: 100, opacity: 0 });
             this._playGenCtaLetterReveal(title);
@@ -1709,15 +1770,40 @@
         });
       };
 
-      const st = ScrollTrigger.create({
-        trigger: ctaBlock,
-        scroller: bc,
-        start: 'top 88%',
-        onEnter: playCtaTitles,
-        onEnterBack: playCtaTitles,
-        onLeaveBack: resetCtaTitles,
-      });
-      page._genScrollTriggers.push(st);
+      page._genPlayCtaTitles = playCtaTitles;
+      page._genResetCtaTitles = resetCtaTitles;
+      page._genCtaWasVisible = false;
+      page._genCtaPlayRequested = false;
+
+      const checkCta = () => {
+        const ratio = this._genCtaVisibleRatio(ctaBlock, bc);
+        const inView = ratio >= 0.2;
+        const maxScroll = Math.max(bc.scrollHeight - bc.clientHeight, 1);
+        const nearBottom = bc.scrollTop + bc.clientHeight >= bc.scrollHeight - 240;
+        const deepEnough = bc.scrollTop / maxScroll > 0.9;
+
+        if ((nearBottom || deepEnough) && !this._genCtaIsRevealed(page) && !page._genCtaPlayRequested) {
+          playCtaTitles();
+        } else if (inView && !page._genCtaWasVisible) {
+          playCtaTitles();
+        } else if (inView && !this._genCtaIsRevealed(page) && !page._genCtaPlayRequested) {
+          playCtaTitles();
+        }
+
+        if (inView || nearBottom || deepEnough) {
+          page._genCtaWasVisible = true;
+        } else if (page._genCtaWasVisible && ratio < 0.04 && !nearBottom && !deepEnough) {
+          resetCtaTitles();
+          page._genCtaPlayRequested = false;
+        }
+      };
+
+      page._genCtaScrollHandler = checkCta;
+      bc.addEventListener('scroll', checkCta, { passive: true });
+      this._bindGenCtaResizeRefresh(page, bc);
+
+      requestAnimationFrame(checkCta);
+      [0.35, 1.0, 2.0, 3.5].forEach(t => gsap.delayedCall(t, checkCta));
     }
 
     _playGenInkReveal(el) {
@@ -2160,6 +2246,19 @@
           }
           this._genKillDelayedCalls(page, '_genInkDelayed');
           this._genKillDelayedCalls(page, '_genCtaDelayed');
+          if (page._genCtaResizeObserver) {
+            page._genCtaResizeObserver.disconnect();
+            page._genCtaResizeObserver = null;
+          }
+          delete page._genCtaResizeBound;
+          delete page._genPlayCtaTitles;
+          delete page._genResetCtaTitles;
+          delete page._genCtaWasVisible;
+          delete page._genCtaPlayRequested;
+          if (page._genCtaScrollHandler && bc) {
+            bc.removeEventListener('scroll', page._genCtaScrollHandler);
+          }
+          delete page._genCtaScrollHandler;
           const lb = document.querySelector('#gen-lightbox');
           const lbImg = document.querySelector('#gen-lightbox-img');
           if (lb) {
@@ -2244,6 +2343,7 @@
                 revealSection(section);
               }
             });
+            this._syncGenCtaIfVisible(page, bc);
           });
         } else {
           const checkSections = () => {
@@ -2255,6 +2355,7 @@
                 revealSection(section);
               }
             });
+            this._syncGenCtaIfVisible(page, bc);
           };
           bc.addEventListener('scroll', checkSections, { passive: true });
           requestAnimationFrame(checkSections);
